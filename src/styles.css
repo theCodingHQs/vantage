@@ -1,15 +1,43 @@
-
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
 @theme {
-  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface-bg);
+  --color-surface-2: var(--surface-2-bg);
+  --color-border: var(--border-color);
+  --color-border-hover: var(--border-hover-color);
+  --color-accent: var(--accent-color);
+  --color-accent-hover: var(--accent-hover-color);
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-text-1: var(--text-1-color);
+  --color-text-2: var(--text-2-color);
+  --color-text-3: var(--text-3-color);
 }
 
 :root {
-  --sea-ink: #173a40;
-  --sea-ink-soft: #416166;
+  --bg: #f8fafc;
+  --surface-bg: #ffffff;
+  --surface-2-bg: #f1f5f9;
+  --border-color: #e2e8f0;
+  --border-hover-color: #cbd5e1;
+  --accent-color: #6366f1;
+  --accent-hover-color: #4f46e5;
+  --text-1-color: #0f172a;
+  --text-2-color: #475569;
+  --text-3-color: #94a3b8;
+
+  background-color: var(--bg);
+  color: var(--text-1-color);
+  --sea-ink: var(--text-1-color);
+  --sea-ink-soft: var(--text-2-color);
   --lagoon: #4fb8b2;
   --lagoon-deep: #328f97;
   --palm: #2f6a4a;
@@ -20,7 +48,7 @@
   --line: rgba(23, 58, 64, 0.14);
   --inset-glint: rgba(255, 255, 255, 0.82);
   --kicker: rgba(47, 106, 74, 0.9);
-  --bg-base: #e7f3ec;
+  --bg-base: var(--bg);
   --header-bg: rgba(251, 255, 248, 0.84);
   --chip-bg: rgba(255, 255, 255, 0.8);
   --chip-line: rgba(47, 106, 74, 0.18);
@@ -29,7 +57,19 @@
   --hero-b: rgba(47, 106, 74, 0.2);
 }
 
-:root[data-theme="dark"] {
+:root[data-theme="dark"],
+.dark {
+  --bg: #0a0a0f;
+  --surface-bg: #111118;
+  --surface-2-bg: #18181f;
+  --border-color: #2a2a35;
+  --border-hover-color: #3a3a48;
+  --accent-color: #6366f1;
+  --accent-hover-color: #4f46e5;
+  --text-1-color: #f1f5f9;
+  --text-2-color: #94a3b8;
+  --text-3-color: #475569;
+
   --sea-ink: #d7ece8;
   --sea-ink-soft: #afcdc8;
   --lagoon: #60d7cf;
@@ -53,6 +93,17 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
+    --bg: #0a0a0f;
+    --surface-bg: #111118;
+    --surface-2-bg: #18181f;
+    --border-color: #2a2a35;
+    --border-hover-color: #3a3a48;
+    --accent-color: #6366f1;
+    --accent-hover-color: #4f46e5;
+    --text-1-color: #f1f5f9;
+    --text-2-color: #94a3b8;
+    --text-3-color: #475569;
+
     --sea-ink: #d7ece8;
     --sea-ink-soft: #afcdc8;
     --lagoon: #60d7cf;
