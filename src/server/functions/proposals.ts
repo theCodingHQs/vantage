@@ -107,7 +107,7 @@ export const acceptProposal = createServerFn({ method: 'POST' })
   }))
   .handler(async ({ data }) => {
     const { db } = await import('#/server/db')
-    const { eq } = await import('drizzle-orm')
+    const { eq, and } = await import('drizzle-orm')
     const { proposals, projects } = await import('#/server/db/schema')
 
     const proposal = await db.query.proposals.findFirst({
@@ -132,14 +132,17 @@ export const acceptProposal = createServerFn({ method: 'POST' })
 
     // 2. Automatically convert accepted proposal to Project
     const existingProject = await db.query.projects.findFirst({
-      where: eq(projects.dealId, proposal.id)
+      where: and(
+        eq(projects.clientId, proposal.clientId),
+        eq(projects.title, proposal.title),
+        eq(projects.userId, proposal.userId)
+      )
     })
 
     if (!existingProject) {
       await db.insert(projects).values({
         userId: proposal.userId,
         clientId: proposal.clientId,
-        dealId: proposal.id, // reference as deal/proposal ID
         title: proposal.title,
         status: 'active',
         type: 'fixed',
