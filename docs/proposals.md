@@ -5,6 +5,7 @@ Build interactive proposals and collect client authorization signatures inside V
 ---
 
 ## 1. Proposal Editor
+
 - Click **New Proposal** in the proposals manager.
 - Input title, client name, estimated deal value, and validity date.
 - Add an executive summary and itemize scope deliverables.
@@ -13,6 +14,7 @@ Build interactive proposals and collect client authorization signatures inside V
 ---
 
 ## 2. Share & Authorization
+
 - Click **Copy Sharing Link** in the proposal detail view. Send this secure URL directly to the client.
 - The client can open the proposal, review the terms, and click **Sign / Accept**.
 - They type their authorization name to sign. Vantage logs the timestamp and signature text.

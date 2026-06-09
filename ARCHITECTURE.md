@@ -33,6 +33,7 @@ Vantage is structured as a monolithic isomorphic application, deploying both cli
 ## 2. Isomorphic Loader & Server Function Pattern
 
 Vantage utilizes **TanStack Start Isomorphic Execution Model**:
+
 1. **Loaders**: Run on the server during SSR (Server-Side Rendering) and pre-hydrate the data. On subsequent navigations, loaders fetch via client-side fetch RPCs automatically.
 2. **Server Functions**: Compiled into light RPC boundaries. Client-side components invoke them directly like standard TypeScript functions:
    ```typescript
@@ -66,6 +67,7 @@ We bypass heavy auth packages in favor of a robust, lightweight, cookie-based se
 ## 4. Redis Caching & Job Queues
 
 Vantage leverages Redis for 4 core functions:
+
 - **Session Caching**: Stores user session profiles with a 5-minute TTL.
 - **Rate Limiting**: Increments hit counters per client IP address on `/login` and `/register` endpoints (maximum 10 requests per minute).
 - **Dashboard Metrics Caching**: Aggregates month-over-month revenue statistics, project hours, and utilization rates, storing the output in Redis. On any invoice payment or client additions, the cache key is purged (`del("dashboard:userId")`) to reflect instant changes.

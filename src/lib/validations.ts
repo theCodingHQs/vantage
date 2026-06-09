@@ -19,7 +19,11 @@ export const onboardingSchema = z.object({
   freelancerType: z.string().min(1, 'Please select your business type'),
   clientName: z.string().min(1, 'Client name is required'),
   clientEmail: z.string().email('Valid client email is required'),
-  hourlyRate: z.string().or(z.number()).transform(v => typeof v === 'string' ? parseFloat(v) || 0 : v).default(0),
+  hourlyRate: z
+    .string()
+    .or(z.number())
+    .transform((v) => (typeof v === 'string' ? parseFloat(v) || 0 : v))
+    .default(0),
 })
 
 // 2. Client CRM
@@ -40,11 +44,19 @@ export const clientSchema = z.object({
 export const dealSchema = z.object({
   clientId: z.string().uuid('Please select a valid client'),
   title: z.string().min(1, 'Deal title is required'),
-  value: z.string().or(z.number()).transform(v => typeof v === 'string' ? parseFloat(v) || 0 : v).default(0),
+  value: z
+    .string()
+    .or(z.number())
+    .transform((v) => (typeof v === 'string' ? parseFloat(v) || 0 : v))
+    .default(0),
   currency: z.string().default('USD'),
   status: z.enum(['lead', 'proposal', 'negotiation', 'won', 'lost']).default('lead'),
   probability: z.number().min(0).max(100).default(50),
-  expectedCloseDate: z.string().optional().nullable().transform(v => v ? new Date(v) : null),
+  expectedCloseDate: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => (v ? new Date(v) : null)),
   notes: z.string().optional().or(z.literal('')),
   lostReason: z.string().optional().or(z.literal('')),
 })
@@ -57,10 +69,26 @@ export const projectSchema = z.object({
   description: z.string().optional().or(z.literal('')),
   status: z.enum(['planning', 'active', 'on_hold', 'completed', 'cancelled']).default('planning'),
   type: z.enum(['fixed', 'hourly', 'retainer']).default('fixed'),
-  budget: z.string().or(z.number()).transform(v => typeof v === 'string' ? parseFloat(v) || 0 : v).default(0),
-  hourlyRate: z.string().or(z.number()).transform(v => typeof v === 'string' ? parseFloat(v) || 0 : v).default(0),
-  startDate: z.string().optional().nullable().transform(v => v ? new Date(v) : null),
-  dueDate: z.string().optional().nullable().transform(v => v ? new Date(v) : null),
+  budget: z
+    .string()
+    .or(z.number())
+    .transform((v) => (typeof v === 'string' ? parseFloat(v) || 0 : v))
+    .default(0),
+  hourlyRate: z
+    .string()
+    .or(z.number())
+    .transform((v) => (typeof v === 'string' ? parseFloat(v) || 0 : v))
+    .default(0),
+  startDate: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => (v ? new Date(v) : null)),
+  dueDate: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => (v ? new Date(v) : null)),
   isBillable: z.boolean().default(true),
 })
 
@@ -71,9 +99,23 @@ export const taskSchema = z.object({
   status: z.enum(['todo', 'in_progress', 'review', 'done']).default('todo'),
   priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium'),
   assigneeNotes: z.string().optional().or(z.literal('')),
-  dueDate: z.string().optional().nullable().transform(v => v ? new Date(v) : null),
-  estimatedHours: z.string().or(z.number()).optional().nullable().transform(v => typeof v === 'string' ? parseFloat(v) || 0 : v),
-  actualHours: z.string().or(z.number()).optional().nullable().transform(v => typeof v === 'string' ? parseFloat(v) || 0 : v),
+  dueDate: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => (v ? new Date(v) : null)),
+  estimatedHours: z
+    .string()
+    .or(z.number())
+    .optional()
+    .nullable()
+    .transform((v) => (typeof v === 'string' ? parseFloat(v) || 0 : v)),
+  actualHours: z
+    .string()
+    .or(z.number())
+    .optional()
+    .nullable()
+    .transform((v) => (typeof v === 'string' ? parseFloat(v) || 0 : v)),
 })
 
 // 5. Time Tracking
@@ -81,11 +123,19 @@ export const timeEntrySchema = z.object({
   projectId: z.string().uuid('Please select a project'),
   taskId: z.string().uuid().optional().nullable(),
   description: z.string().min(1, 'Description is required'),
-  startedAt: z.string().transform(v => new Date(v)),
-  endedAt: z.string().optional().nullable().transform(v => v ? new Date(v) : null),
+  startedAt: z.string().transform((v) => new Date(v)),
+  endedAt: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => (v ? new Date(v) : null)),
   durationMinutes: z.number().int().min(1, 'Duration must be at least 1 minute'),
   isBillable: z.boolean().default(true),
-  hourlyRate: z.string().or(z.number()).transform(v => typeof v === 'string' ? parseFloat(v) || 0 : v).default(0),
+  hourlyRate: z
+    .string()
+    .or(z.number())
+    .transform((v) => (typeof v === 'string' ? parseFloat(v) || 0 : v))
+    .default(0),
 })
 
 // 6. Expenses
@@ -94,9 +144,13 @@ export const expenseSchema = z.object({
   clientId: z.string().uuid().optional().nullable(),
   category: z.string().min(1, 'Category is required'),
   description: z.string().optional().or(z.literal('')),
-  amount: z.string().or(z.number()).transform(v => typeof v === 'string' ? parseFloat(v) || 0 : v).default(0),
+  amount: z
+    .string()
+    .or(z.number())
+    .transform((v) => (typeof v === 'string' ? parseFloat(v) || 0 : v))
+    .default(0),
   currency: z.string().default('USD'),
-  date: z.string().transform(v => new Date(v)),
+  date: z.string().transform((v) => new Date(v)),
   isBillable: z.boolean().default(false),
   receiptUrl: z.string().optional().or(z.literal('')),
 })
@@ -104,8 +158,14 @@ export const expenseSchema = z.object({
 // 7. Invoices
 export const invoiceItemSchema = z.object({
   description: z.string().min(1, 'Description is required'),
-  quantity: z.string().or(z.number()).transform(v => typeof v === 'string' ? parseFloat(v) || 1 : v),
-  unitPrice: z.string().or(z.number()).transform(v => typeof v === 'string' ? parseFloat(v) || 0 : v),
+  quantity: z
+    .string()
+    .or(z.number())
+    .transform((v) => (typeof v === 'string' ? parseFloat(v) || 1 : v)),
+  unitPrice: z
+    .string()
+    .or(z.number())
+    .transform((v) => (typeof v === 'string' ? parseFloat(v) || 0 : v)),
   type: z.enum(['service', 'time', 'expense', 'product']).default('service'),
 })
 
@@ -113,10 +173,18 @@ export const invoiceSchema = z.object({
   clientId: z.string().uuid('Please select a client'),
   projectId: z.string().uuid().optional().nullable(),
   invoiceNumber: z.string().min(1, 'Invoice number is required'),
-  issueDate: z.string().transform(v => new Date(v)),
-  dueDate: z.string().transform(v => new Date(v)),
-  taxRate: z.string().or(z.number()).transform(v => typeof v === 'string' ? parseFloat(v) || 0 : v).default(0),
-  discountAmount: z.string().or(z.number()).transform(v => typeof v === 'string' ? parseFloat(v) || 0 : v).default(0),
+  issueDate: z.string().transform((v) => new Date(v)),
+  dueDate: z.string().transform((v) => new Date(v)),
+  taxRate: z
+    .string()
+    .or(z.number())
+    .transform((v) => (typeof v === 'string' ? parseFloat(v) || 0 : v))
+    .default(0),
+  discountAmount: z
+    .string()
+    .or(z.number())
+    .transform((v) => (typeof v === 'string' ? parseFloat(v) || 0 : v))
+    .default(0),
   currency: z.string().default('USD'),
   notes: z.string().optional().or(z.literal('')),
   items: z.array(invoiceItemSchema).min(1, 'At least one line item is required'),
@@ -126,8 +194,16 @@ export const invoiceSchema = z.object({
 export const proposalSchema = z.object({
   clientId: z.string().uuid('Please select a client'),
   title: z.string().min(1, 'Proposal title is required'),
-  validUntil: z.string().optional().nullable().transform(v => v ? new Date(v) : null),
-  totalValue: z.string().or(z.number()).transform(v => typeof v === 'string' ? parseFloat(v) || 0 : v).default(0),
+  validUntil: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => (v ? new Date(v) : null)),
+  totalValue: z
+    .string()
+    .or(z.number())
+    .transform((v) => (typeof v === 'string' ? parseFloat(v) || 0 : v))
+    .default(0),
   contentJson: z.any(), // Structure blocks
 })
 
@@ -151,7 +227,11 @@ export const contentCalendarSchema = z.object({
   status: z.enum(['idea', 'drafting', 'scheduled', 'published', 'archived']).default('idea'),
   content: z.string().optional().or(z.literal('')),
   mediaUrls: z.array(z.string()).default([]),
-  scheduledAt: z.string().optional().nullable().transform(v => v ? new Date(v) : null),
+  scheduledAt: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => (v ? new Date(v) : null)),
   tags: z.array(z.string()).default([]),
   notes: z.string().optional().or(z.literal('')),
 })

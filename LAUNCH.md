@@ -22,7 +22,7 @@ Are you tired of switching between Notion pages, Google Sheets, Trello boards, F
 
 From the moment you register, the **onboarding wizard** initializes your company branding, currency, and defaults. The **CRM pipeline** tracks leads from proposal to checkout. Start project contracts, create task checklists, and trigger the **Zustand persistent live-timer** (which continues running even if you refresh your browser!).
 
-When the job is complete, auto-generate branded, tax-ready invoices from your logged time entries, and copy secure **Client Portal** links where clients can review deliverables, view invoice history, and chat with you directly. 
+When the job is complete, auto-generate branded, tax-ready invoices from your logged time entries, and copy secure **Client Portal** links where clients can review deliverables, view invoice history, and chat with you directly.
 
 No monthly enterprise fees. Own your data. Export your entire database as a JSON file anytime in one click. Deploy to Vercel, Railway, or VPS in under 10 minutes.
 

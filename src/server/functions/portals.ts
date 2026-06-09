@@ -1,33 +1,32 @@
-"use server"
+'use server'
 
 import { createServerFn } from '@tanstack/react-start'
 import { clientPortalSchema } from '#/lib/validations'
 import { z } from 'zod'
 
 // 1. Get Portals list
-export const getPortals = createServerFn({ method: 'GET' })
-  .handler(async () => {
-    const { requireAuth } = await import('#/server/auth')
-    const auth = await requireAuth()
-    const userId = auth.user.id
+export const getPortals = createServerFn({ method: 'GET' }).handler(async () => {
+  const { requireAuth } = await import('#/server/auth')
+  const auth = await requireAuth()
+  const userId = auth.user.id
 
-    const { db } = await import('#/server/db')
-    const { eq, desc } = await import('drizzle-orm')
-    const { clientPortals, clients } = await import('#/server/db/schema')
+  const { db } = await import('#/server/db')
+  const { eq, desc } = await import('drizzle-orm')
+  const { clientPortals, clients } = await import('#/server/db/schema')
 
-    const list = await db
-      .select({
-        portal: clientPortals,
-        clientName: clients.name,
-        clientCompany: clients.company,
-      })
-      .from(clientPortals)
-      .innerJoin(clients, eq(clientPortals.clientId, clients.id))
-      .where(eq(clientPortals.userId, userId))
-      .orderBy(desc(clientPortals.createdAt))
+  const list = await db
+    .select({
+      portal: clientPortals,
+      clientName: clients.name,
+      clientCompany: clients.company,
+    })
+    .from(clientPortals)
+    .innerJoin(clients, eq(clientPortals.clientId, clients.id))
+    .where(eq(clientPortals.userId, userId))
+    .orderBy(desc(clientPortals.createdAt))
 
-    return list
-  })
+  return list
+})
 
 // 2. Update/Upsert Portal Settings
 export const savePortalSettings = createServerFn({ method: 'POST' })
@@ -43,37 +42,42 @@ export const savePortalSettings = createServerFn({ method: 'POST' })
 
     // Check if portal already exists
     const existing = await db.query.clientPortals.findFirst({
-      where: and(eq(clientPortals.clientId, data.clientId), eq(clientPortals.userId, userId))
+      where: and(eq(clientPortals.clientId, data.clientId), eq(clientPortals.userId, userId)),
     })
 
     if (existing) {
-      const [updated] = await db.update(clientPortals).set({
-        slug: data.slug,
-        isActive: data.isActive,
-        passwordHash: data.password || existing.passwordHash, // simple storage mock
-        showProjects: data.showProjects,
-        showInvoices: data.showInvoices,
-        showFiles: data.showFiles,
-        showMessages: data.showMessages,
-        customMessage: data.customMessage,
-        updatedAt: new Date(),
-      })
-      .where(eq(clientPortals.id, existing.id))
-      .returning()
+      const [updated] = await db
+        .update(clientPortals)
+        .set({
+          slug: data.slug,
+          isActive: data.isActive,
+          passwordHash: data.password || existing.passwordHash, // simple storage mock
+          showProjects: data.showProjects,
+          showInvoices: data.showInvoices,
+          showFiles: data.showFiles,
+          showMessages: data.showMessages,
+          customMessage: data.customMessage,
+          updatedAt: new Date(),
+        })
+        .where(eq(clientPortals.id, existing.id))
+        .returning()
       return updated
     } else {
-      const [newPortal] = await db.insert(clientPortals).values({
-        userId,
-        clientId: data.clientId,
-        slug: data.slug,
-        isActive: data.isActive,
-        passwordHash: data.password || null,
-        showProjects: data.showProjects,
-        showInvoices: data.showInvoices,
-        showFiles: data.showFiles,
-        showMessages: data.showMessages,
-        customMessage: data.customMessage,
-      }).returning()
+      const [newPortal] = await db
+        .insert(clientPortals)
+        .values({
+          userId,
+          clientId: data.clientId,
+          slug: data.slug,
+          isActive: data.isActive,
+          passwordHash: data.password || null,
+          showProjects: data.showProjects,
+          showInvoices: data.showInvoices,
+          showFiles: data.showFiles,
+          showMessages: data.showMessages,
+          customMessage: data.customMessage,
+        })
+        .returning()
       return newPortal
     }
   })
@@ -84,7 +88,8 @@ export const getPublicPortalData = createServerFn({ method: 'GET' })
   .handler(async ({ data }) => {
     const { db } = await import('#/server/db')
     const { eq, and, desc, ne } = await import('drizzle-orm')
-    const { clientPortals, portalMessages, clients, projects, invoices, users, files, proposals } = await import('#/server/db/schema')
+    const { clientPortals, portalMessages, clients, projects, invoices, users, files, proposals } =
+      await import('#/server/db/schema')
 
     const portal = await db.query.clientPortals.findFirst({
       where: and(eq(clientPortals.slug, data.slug), eq(clientPortals.isActive, true)),
@@ -92,8 +97,8 @@ export const getPublicPortalData = createServerFn({ method: 'GET' })
         messages: {
           orderBy: [desc(portalMessages.createdAt)],
           limit: 50,
-        }
-      }
+        },
+      },
     })
 
     if (!portal) {
@@ -101,11 +106,11 @@ export const getPublicPortalData = createServerFn({ method: 'GET' })
     }
 
     const freelancer = await db.query.users.findFirst({
-      where: eq(users.id, portal.userId)
+      where: eq(users.id, portal.userId),
     })
 
     const client = await db.query.clients.findFirst({
-      where: eq(clients.id, portal.clientId)
+      where: eq(clients.id, portal.clientId),
     })
 
     let activeProjects: any[] = []
@@ -116,42 +121,41 @@ export const getPublicPortalData = createServerFn({ method: 'GET' })
       activeProjects = await db.query.projects.findMany({
         where: and(eq(projects.clientId, portal.clientId), eq(projects.status, 'active')),
         with: {
-          tasks: true
-        }
+          tasks: true,
+        },
       })
     }
 
     if (portal.showInvoices) {
       activeInvoices = await db.query.invoices.findMany({
         where: eq(invoices.clientId, portal.clientId),
-        orderBy: [desc(invoices.issueDate)]
+        orderBy: [desc(invoices.issueDate)],
       })
     }
 
     if (portal.showFiles) {
       sharedFiles = await db.query.files.findMany({
         where: eq(files.clientId, portal.clientId),
-        orderBy: [desc(files.createdAt)]
+        orderBy: [desc(files.createdAt)],
       })
     }
 
     const proposalsList = await db.query.proposals.findMany({
-      where: and(
-        eq(proposals.clientId, portal.clientId),
-        ne(proposals.status, 'draft')
-      ),
-      orderBy: [desc(proposals.createdAt)]
+      where: and(eq(proposals.clientId, portal.clientId), ne(proposals.status, 'draft')),
+      orderBy: [desc(proposals.createdAt)],
     })
 
     return {
       portal,
-      freelancer: freelancer ? {
-        businessName: freelancer.businessName,
-        businessLogoUrl: freelancer.businessLogoUrl,
-        businessAddress: freelancer.businessAddress,
-        name: freelancer.name,
-        currency: freelancer.currency,
-      } : null,
+      freelancer: freelancer
+        ? {
+            businessName: freelancer.businessName,
+            businessLogoUrl: freelancer.businessLogoUrl,
+            businessAddress: freelancer.businessAddress,
+            name: freelancer.name,
+            currency: freelancer.currency,
+          }
+        : null,
       client,
       activeProjects,
       activeInvoices,
@@ -162,11 +166,13 @@ export const getPublicPortalData = createServerFn({ method: 'GET' })
 
 // 4. Send Message inside Portal (Public/Client or Freelancer)
 export const sendPortalMessage = createServerFn({ method: 'POST' })
-  .validator(z.object({
-    portalId: z.string().uuid(),
-    senderType: z.enum(['client', 'freelancer']),
-    content: z.string().min(1, 'Message cannot be empty')
-  }))
+  .validator(
+    z.object({
+      portalId: z.string().uuid(),
+      senderType: z.enum(['client', 'freelancer']),
+      content: z.string().min(1, 'Message cannot be empty'),
+    })
+  )
   .handler(async ({ data }) => {
     // If sender is freelancer, we can check auth, otherwise it's the client accessing their public portal
     if (data.senderType === 'freelancer') {
@@ -177,11 +183,14 @@ export const sendPortalMessage = createServerFn({ method: 'POST' })
     const { db } = await import('#/server/db')
     const { portalMessages } = await import('#/server/db/schema')
 
-    const [newMessage] = await db.insert(portalMessages).values({
-      portalId: data.portalId,
-      senderType: data.senderType,
-      content: data.content,
-    }).returning()
+    const [newMessage] = await db
+      .insert(portalMessages)
+      .values({
+        portalId: data.portalId,
+        senderType: data.senderType,
+        content: data.content,
+      })
+      .returning()
 
     return newMessage
   })

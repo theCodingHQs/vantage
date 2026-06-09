@@ -34,17 +34,20 @@ function ReportsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-text-1">Reports & Analytics</h1>
-          <p className="text-xs text-text-2">Review business margins, project profitability logs, and outstanding billing age.</p>
+          <p className="text-xs text-text-2">
+            Review business margins, project profitability logs, and outstanding billing age.
+          </p>
         </div>
       </div>
 
       {/* Grid of details */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
         {/* Expenses category breakdown */}
         <Card className="lg:col-span-1">
           <CardHeader className="pb-2 border-0">
-            <CardTitle className="text-xs font-bold text-text-2 uppercase">Expense Allocation</CardTitle>
+            <CardTitle className="text-xs font-bold text-text-2 uppercase">
+              Expense Allocation
+            </CardTitle>
           </CardHeader>
           <CardContent className="h-64 flex flex-col justify-center items-center">
             {reports.expenseCategoryData.length === 0 ? (
@@ -66,7 +69,11 @@ function ReportsPage() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#111118', borderColor: '#2a2a35', borderRadius: '8px' }}
+                    contentStyle={{
+                      backgroundColor: '#111118',
+                      borderColor: '#2a2a35',
+                      borderRadius: '8px',
+                    }}
                     itemStyle={{ color: '#f1f5f9', fontSize: '11px' }}
                     formatter={(v) => [`$${parseFloat(v as string).toFixed(2)}`]}
                   />
@@ -85,17 +92,30 @@ function ReportsPage() {
         {/* Invoice aging bucket */}
         <Card className="lg:col-span-2">
           <CardHeader className="pb-2 border-0">
-            <CardTitle className="text-xs font-bold text-text-2 uppercase">Invoice Aging Report</CardTitle>
+            <CardTitle className="text-xs font-bold text-text-2 uppercase">
+              Invoice Aging Report
+            </CardTitle>
           </CardHeader>
           <CardContent className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={agingChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <BarChart data={agingChartData} margin={{ top: 10, right: 10, left: -5, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `$${v}`} />
+                <YAxis
+                  stroke="#94a3b8"
+                  fontSize={11}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(v) => `$${v}`}
+                  width={55}
+                />
                 <Tooltip
                   cursor={{ fill: 'rgba(99, 102, 241, 0.05)' }}
-                  contentStyle={{ backgroundColor: '#111118', borderColor: '#2a2a35', borderRadius: '8px' }}
+                  contentStyle={{
+                    backgroundColor: '#111118',
+                    borderColor: '#2a2a35',
+                    borderRadius: '8px',
+                  }}
                   labelStyle={{ color: '#94a3b8', fontSize: '11px' }}
                   itemStyle={{ color: '#f1f5f9', fontSize: '12px' }}
                   formatter={(v) => [`$${parseFloat(v as string).toFixed(2)}`]}
@@ -105,17 +125,26 @@ function ReportsPage() {
             </ResponsiveContainer>
           </CardContent>
         </Card>
-
       </div>
 
       {/* Project Profitability Margins Table */}
       <Card>
         <CardHeader className="pb-2 border-0">
-          <CardTitle className="text-xs font-bold text-text-2 uppercase">Project Profitability & Margins</CardTitle>
+          <CardTitle className="text-xs font-bold text-text-2 uppercase">
+            Project Profitability & Margins
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Table
-            headers={['Project Title', 'Client', 'Revenue Made', 'Expenses', 'Logged Hours', 'Net Profit', 'Margin']}
+            headers={[
+              'Project Title',
+              'Client',
+              'Revenue Made',
+              'Expenses',
+              'Logged Hours',
+              'Net Profit',
+              'Margin',
+            ]}
             isEmpty={reports.projectProfitability.length === 0}
             emptyMessage="Start projects and receive payments to log profitability metrics."
           >
@@ -123,14 +152,24 @@ function ReportsPage() {
               <TableRow key={p.id}>
                 <TableCell className="font-semibold text-text-1">{p.projectTitle}</TableCell>
                 <TableCell>{p.clientName}</TableCell>
-                <TableCell className="font-semibold text-text-1">{formatCurrency(p.revenue)}</TableCell>
-                <TableCell className="text-danger font-semibold">{formatCurrency(p.expenses)}</TableCell>
+                <TableCell className="font-semibold text-text-1">
+                  {formatCurrency(p.revenue)}
+                </TableCell>
+                <TableCell className="text-danger font-semibold">
+                  {formatCurrency(p.expenses)}
+                </TableCell>
                 <TableCell className="font-mono text-accent">{p.loggedHours}h</TableCell>
-                <TableCell className={`font-bold ${p.profit >= 0 ? 'text-success' : 'text-danger'}`}>
+                <TableCell
+                  className={`font-bold ${p.profit >= 0 ? 'text-success' : 'text-danger'}`}
+                >
                   {formatCurrency(p.profit)}
                 </TableCell>
                 <TableCell>
-                  <Badge variant={p.marginPercent >= 20 ? 'success' : p.marginPercent > 0 ? 'primary' : 'danger'}>
+                  <Badge
+                    variant={
+                      p.marginPercent >= 20 ? 'success' : p.marginPercent > 0 ? 'primary' : 'danger'
+                    }
+                  >
                     {p.marginPercent}%
                   </Badge>
                 </TableCell>
@@ -143,7 +182,9 @@ function ReportsPage() {
       {/* Invoice Aging list breakdown */}
       <Card>
         <CardHeader className="pb-2 border-0">
-          <CardTitle className="text-xs font-bold text-text-2 uppercase">Outstanding Statement Ages</CardTitle>
+          <CardTitle className="text-xs font-bold text-text-2 uppercase">
+            Outstanding Statement Ages
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Table
@@ -153,11 +194,17 @@ function ReportsPage() {
           >
             {reports.agingReport.items.map((item: any, idx: number) => (
               <TableRow key={idx}>
-                <TableCell className="font-semibold font-mono text-text-1">{item.invoiceNumber}</TableCell>
+                <TableCell className="font-semibold font-mono text-text-1">
+                  {item.invoiceNumber}
+                </TableCell>
                 <TableCell>{item.clientName}</TableCell>
                 <TableCell>{formatDate(item.dueDate)}</TableCell>
-                <TableCell className="font-mono text-accent">{item.daysOutstanding} days past due</TableCell>
-                <TableCell className="font-extrabold text-text-1">{formatCurrency(item.total)}</TableCell>
+                <TableCell className="font-mono text-accent">
+                  {item.daysOutstanding} days past due
+                </TableCell>
+                <TableCell className="font-extrabold text-text-1">
+                  {formatCurrency(item.total)}
+                </TableCell>
               </TableRow>
             ))}
           </Table>

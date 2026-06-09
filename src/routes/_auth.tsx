@@ -25,7 +25,9 @@ function AuthLayout() {
         </div>
         <div>
           <span className="font-semibold text-text-1 tracking-tight text-lg block">Vantage</span>
-          <span className="text-[10px] text-text-3 font-semibold uppercase tracking-wider">Freelancer Operating System</span>
+          <span className="text-[10px] text-text-3 font-semibold uppercase tracking-wider">
+            Freelancer Operating System
+          </span>
         </div>
       </div>
 

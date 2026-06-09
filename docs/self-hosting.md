@@ -22,6 +22,7 @@ Vantage is 100% open-source and easy to host on your own infrastructure.
 ## 2. Self-Hosting on a Linux VPS (Ubuntu/Nginx)
 
 ### Prerequisites
+
 - Node.js v20+
 - PostgreSQL v15+
 - Redis Server v7+
@@ -42,16 +43,18 @@ Vantage is 100% open-source and easy to host on your own infrastructure.
 3. Setup PM2 process configuration `ecosystem.config.cjs`:
    ```javascript
    module.exports = {
-     apps: [{
-       name: 'vantage',
-       script: 'dist/server/server.js',
-       env: {
-         NODE_ENV: 'production',
-         DATABASE_URL: 'postgresql://...',
-         REDIS_URL: 'redis://...',
-         BETTER_AUTH_SECRET: '...',
-       }
-     }]
+     apps: [
+       {
+         name: 'vantage',
+         script: 'dist/server/server.js',
+         env: {
+           NODE_ENV: 'production',
+           DATABASE_URL: 'postgresql://...',
+           REDIS_URL: 'redis://...',
+           BETTER_AUTH_SECRET: '...',
+         },
+       },
+     ],
    }
    ```
 4. Start process:

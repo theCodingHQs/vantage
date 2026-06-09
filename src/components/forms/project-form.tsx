@@ -42,7 +42,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ clientsList, onSuccess
           startDate: startDate || null,
           dueDate: dueDate || null,
           isBillable,
-        }
+        },
       })
       onSuccess(res)
     } catch (err: any) {
@@ -52,9 +52,9 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ clientsList, onSuccess
     }
   }
 
-  const clientOptions = clientsList.map(c => ({
+  const clientOptions = clientsList.map((c) => ({
     value: c.id,
-    label: c.company ? `${c.name} (${c.company})` : c.name
+    label: c.company ? `${c.name} (${c.company})` : c.name,
   }))
 
   return (

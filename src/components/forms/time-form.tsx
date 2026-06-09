@@ -22,7 +22,7 @@ export const TimeForm: React.FC<TimeFormProps> = ({
   onCancel,
 }) => {
   const startTimer = useTimerStore((state) => state.startTimer)
-  
+
   const [projectId, setProjectId] = useState(projectsList[0]?.project.id || '')
   const [taskId, setTaskId] = useState('')
   const [description, setDescription] = useState('')
@@ -73,7 +73,7 @@ export const TimeForm: React.FC<TimeFormProps> = ({
           durationMinutes: totalMinutes,
           isBillable: true,
           hourlyRate: rate,
-        }
+        },
       })
       onSuccess()
     } catch (err: any) {
@@ -86,7 +86,7 @@ export const TimeForm: React.FC<TimeFormProps> = ({
   const handleStartTimer = () => {
     const proj = projectsList.find((p) => p.project.id === projectId)
     const task = tasksList.find((t) => t.id === taskId)
-    
+
     if (!proj) return
 
     startTimer(
@@ -115,7 +115,9 @@ export const TimeForm: React.FC<TimeFormProps> = ({
       <div className="flex items-center gap-3 p-3 bg-surface-2 rounded-xl border border-border/80">
         <div className="flex-1">
           <p className="text-xs font-semibold text-text-1">Start Live Tracker</p>
-          <p className="text-[10px] text-text-3">Persists in your sidebar as you navigate routes.</p>
+          <p className="text-[10px] text-text-3">
+            Persists in your sidebar as you navigate routes.
+          </p>
         </div>
         <Button size="sm" onClick={handleStartTimer} className="flex items-center gap-1">
           <Play size={12} fill="currentColor" /> Start Live Timer
@@ -124,7 +126,9 @@ export const TimeForm: React.FC<TimeFormProps> = ({
 
       <div className="relative flex py-2 items-center">
         <div className="flex-grow border-t border-border/60"></div>
-        <span className="flex-shrink mx-4 text-text-3 text-[10px] font-bold uppercase tracking-wider">or log manually</span>
+        <span className="flex-shrink mx-4 text-text-3 text-[10px] font-bold uppercase tracking-wider">
+          or log manually
+        </span>
         <div className="flex-grow border-t border-border/60"></div>
       </div>
 

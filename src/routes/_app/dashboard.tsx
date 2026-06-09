@@ -11,15 +11,7 @@ import { ClientForm } from '#/components/forms/client-form'
 import { ProjectForm } from '#/components/forms/project-form'
 import { TimeForm } from '#/components/forms/time-form'
 import { formatCurrency, formatDate, formatRelativeTime } from '#/lib/utils'
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import {
   TrendingUp,
   DollarSign,
@@ -39,7 +31,7 @@ export const Route = createFileRoute('/_app/dashboard')({
     // Fetch clients and projects for form selections
     const clientsList = await getClients({ data: { status: 'all' } })
     const projectsList = await getProjects({ data: { status: 'all' } })
-    
+
     return { dashboard, clientsList, projectsList }
   },
   component: DashboardPage,
@@ -48,7 +40,7 @@ export const Route = createFileRoute('/_app/dashboard')({
 function DashboardPage() {
   const { dashboard, clientsList, projectsList } = Route.useLoaderData()
   const router = useRouter()
-  
+
   // Modal states
   const [isClientOpen, setIsClientOpen] = useState(false)
   const [isProjectOpen, setIsProjectOpen] = useState(false)
@@ -62,9 +54,9 @@ function DashboardPage() {
   }
 
   // Quick projects/tasks mock lists for TimeForm
-  const quickProjectsList = projectsList.map(p => ({
+  const quickProjectsList = projectsList.map((p) => ({
     project: { id: p.project.id, title: p.project.title, hourlyRate: p.project.hourlyRate },
-    clientName: p.clientName
+    clientName: p.clientName,
   }))
 
   const quickTasksList: any[] = [] // empty initial tasks or mock
@@ -75,16 +67,33 @@ function DashboardPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-text-1">Business Dashboard</h1>
-          <p className="text-xs text-text-2">Welcome back! Here is a glance at your financial health.</p>
+          <p className="text-xs text-text-2">
+            Welcome back! Here is a glance at your financial health.
+          </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button variant="secondary" size="sm" onClick={() => setIsClientOpen(true)} className="flex items-center gap-1">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setIsClientOpen(true)}
+            className="flex items-center gap-1"
+          >
             <Plus size={14} /> Add Client
           </Button>
-          <Button variant="secondary" size="sm" onClick={() => setIsProjectOpen(true)} className="flex items-center gap-1">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setIsProjectOpen(true)}
+            className="flex items-center gap-1"
+          >
             <Plus size={14} /> New Project
           </Button>
-          <Button variant="secondary" size="sm" onClick={() => setIsTimeOpen(true)} className="flex items-center gap-1">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setIsTimeOpen(true)}
+            className="flex items-center gap-1"
+          >
             <Clock size={14} /> Log Time
           </Button>
           <Link to="/invoices">
@@ -100,17 +109,25 @@ function DashboardPage() {
         {/* Metric 1: Revenue this month */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 mb-0 border-0">
-            <CardTitle className="text-xs font-semibold text-text-2 uppercase">Revenue This Month</CardTitle>
+            <CardTitle className="text-xs font-semibold text-text-2 uppercase">
+              Revenue This Month
+            </CardTitle>
             <DollarSign className="h-4 w-4 text-accent" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(dashboard.revenueThisMonth)}</div>
             <div className="flex items-center gap-1.5 mt-1">
-              <span className={`text-xs font-semibold flex items-center gap-0.5 ${
-                dashboard.revenueChangePercent >= 0 ? 'text-success' : 'text-danger'
-              }`}>
-                <TrendingUp size={12} className={dashboard.revenueChangePercent < 0 ? 'rotate-180' : ''} />
-                {dashboard.revenueChangePercent >= 0 ? '+' : ''}{dashboard.revenueChangePercent}%
+              <span
+                className={`text-xs font-semibold flex items-center gap-0.5 ${
+                  dashboard.revenueChangePercent >= 0 ? 'text-success' : 'text-danger'
+                }`}
+              >
+                <TrendingUp
+                  size={12}
+                  className={dashboard.revenueChangePercent < 0 ? 'rotate-180' : ''}
+                />
+                {dashboard.revenueChangePercent >= 0 ? '+' : ''}
+                {dashboard.revenueChangePercent}%
               </span>
               <span className="text-[10px] text-text-3">vs last month</span>
             </div>
@@ -120,19 +137,25 @@ function DashboardPage() {
         {/* Metric 2: Outstanding invoices */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 mb-0 border-0">
-            <CardTitle className="text-xs font-semibold text-text-2 uppercase">Outstanding Invoices</CardTitle>
+            <CardTitle className="text-xs font-semibold text-text-2 uppercase">
+              Outstanding Invoices
+            </CardTitle>
             <FileText className="h-4 w-4 text-warning" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(dashboard.outstandingTotal)}</div>
-            <p className="text-[10px] text-text-2 mt-1">{dashboard.outstandingCount} invoices awaiting client payment</p>
+            <p className="text-[10px] text-text-2 mt-1">
+              {dashboard.outstandingCount} invoices awaiting client payment
+            </p>
           </CardContent>
         </Card>
 
         {/* Metric 3: Active projects */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 mb-0 border-0">
-            <CardTitle className="text-xs font-semibold text-text-2 uppercase">Active Projects</CardTitle>
+            <CardTitle className="text-xs font-semibold text-text-2 uppercase">
+              Active Projects
+            </CardTitle>
             <Briefcase className="h-4 w-4 text-success" />
           </CardHeader>
           <CardContent>
@@ -144,13 +167,21 @@ function DashboardPage() {
         {/* Metric 4: Overdue Alerts */}
         <Card className={dashboard.overdueTotal > 0 ? 'border-danger/30 bg-danger/[0.02]' : ''}>
           <CardHeader className="flex flex-row items-center justify-between pb-2 mb-0 border-0">
-            <CardTitle className="text-xs font-semibold text-text-2 uppercase">Overdue Income</CardTitle>
-            <AlertCircle className={`h-4 w-4 ${dashboard.overdueTotal > 0 ? 'text-danger' : 'text-text-3'}`} />
+            <CardTitle className="text-xs font-semibold text-text-2 uppercase">
+              Overdue Income
+            </CardTitle>
+            <AlertCircle
+              className={`h-4 w-4 ${dashboard.overdueTotal > 0 ? 'text-danger' : 'text-text-3'}`}
+            />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-text-1">{formatCurrency(dashboard.overdueTotal)}</div>
+            <div className="text-2xl font-bold text-text-1">
+              {formatCurrency(dashboard.overdueTotal)}
+            </div>
             {dashboard.overdueTotal > 0 ? (
-              <p className="text-[10px] text-danger font-medium mt-1">{dashboard.overdueCount} invoices past due! Send follow-up.</p>
+              <p className="text-[10px] text-danger font-medium mt-1">
+                {dashboard.overdueCount} invoices past due! Send follow-up.
+              </p>
             ) : (
               <p className="text-[10px] text-text-3 mt-1">Excellent. No overdue client balances.</p>
             )}
@@ -163,17 +194,33 @@ function DashboardPage() {
         {/* Revenue chart */}
         <Card className="lg:col-span-2">
           <CardHeader className="pb-2 border-0">
-            <CardTitle className="text-xs font-bold text-text-2 uppercase">Revenue Performance (6 Months)</CardTitle>
+            <CardTitle className="text-xs font-bold text-text-2 uppercase">
+              Revenue Performance (6 Months)
+            </CardTitle>
           </CardHeader>
           <CardContent className="h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={dashboard.revenueChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <BarChart
+                data={dashboard.revenueChartData}
+                margin={{ top: 10, right: 10, left: -5, bottom: 0 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
                 <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `$${v}`} />
+                <YAxis
+                  stroke="#94a3b8"
+                  fontSize={11}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(v) => `$${v}`}
+                  width={55}
+                />
                 <Tooltip
                   cursor={{ fill: 'rgba(99, 102, 241, 0.05)' }}
-                  contentStyle={{ backgroundColor: '#111118', borderColor: '#2a2a35', borderRadius: '8px' }}
+                  contentStyle={{
+                    backgroundColor: '#111118',
+                    borderColor: '#2a2a35',
+                    borderRadius: '8px',
+                  }}
                   labelStyle={{ color: '#94a3b8', fontSize: '11px' }}
                   itemStyle={{ color: '#f1f5f9', fontSize: '12px' }}
                   formatter={(v) => [`$${parseFloat(v as string).toFixed(2)}`, 'Paid Revenue']}
@@ -188,13 +235,22 @@ function DashboardPage() {
         <div className="space-y-6">
           <Card>
             <CardHeader className="pb-2 border-0">
-              <CardTitle className="text-xs font-bold text-text-2 uppercase">Billable Utilization</CardTitle>
+              <CardTitle className="text-xs font-bold text-text-2 uppercase">
+                Billable Utilization
+              </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col items-center justify-center py-6">
               <div className="relative w-32 h-32 flex items-center justify-center">
                 {/* SVG Progress Circle */}
                 <svg className="absolute w-full h-full -rotate-90">
-                  <circle cx="64" cy="64" r="50" className="stroke-border" strokeWidth="10" fill="transparent" />
+                  <circle
+                    cx="64"
+                    cy="64"
+                    r="50"
+                    className="stroke-border"
+                    strokeWidth="10"
+                    fill="transparent"
+                  />
                   <circle
                     cx="64"
                     cy="64"
@@ -207,8 +263,12 @@ function DashboardPage() {
                   />
                 </svg>
                 <div className="text-center">
-                  <span className="text-3xl font-extrabold text-text-1">{dashboard.utilizationRate}%</span>
-                  <span className="block text-[9px] text-text-3 font-semibold uppercase mt-0.5">Billable Time</span>
+                  <span className="text-3xl font-extrabold text-text-1">
+                    {dashboard.utilizationRate}%
+                  </span>
+                  <span className="block text-[9px] text-text-3 font-semibold uppercase mt-0.5">
+                    Billable Time
+                  </span>
                 </div>
               </div>
               <p className="text-[10px] text-text-2 mt-4 text-center leading-relaxed px-4">
@@ -224,11 +284,15 @@ function DashboardPage() {
         {/* Recent Activity Feed */}
         <Card>
           <CardHeader className="border-0 pb-2">
-            <CardTitle className="text-xs font-bold text-text-2 uppercase">Recent Activity Log</CardTitle>
+            <CardTitle className="text-xs font-bold text-text-2 uppercase">
+              Recent Activity Log
+            </CardTitle>
           </CardHeader>
           <CardContent>
             {dashboard.activityFeed.length === 0 ? (
-              <div className="text-center py-8 text-text-3 text-xs">No recent actions recorded.</div>
+              <div className="text-center py-8 text-text-3 text-xs">
+                No recent actions recorded.
+              </div>
             ) : (
               <div className="flow-root">
                 <ul className="-mb-8">
@@ -236,7 +300,10 @@ function DashboardPage() {
                     <li key={activity.id}>
                       <div className="relative pb-8">
                         {idx !== dashboard.activityFeed.length - 1 && (
-                          <span className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-border" aria-hidden="true" />
+                          <span
+                            className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-border"
+                            aria-hidden="true"
+                          />
                         )}
                         <div className="relative flex space-x-3">
                           <div>
@@ -249,7 +316,9 @@ function DashboardPage() {
                           <div className="flex-1 min-w-0 pt-1.5 flex justify-between space-x-4">
                             <div>
                               <p className="text-xs text-text-1 font-semibold">{activity.title}</p>
-                              <p className="text-[10px] text-text-2 mt-0.5">{activity.description}</p>
+                              <p className="text-[10px] text-text-2 mt-0.5">
+                                {activity.description}
+                              </p>
                             </div>
                             <div className="text-right text-[9px] text-text-3 font-medium whitespace-nowrap">
                               {formatRelativeTime(activity.date)}
@@ -269,15 +338,22 @@ function DashboardPage() {
         <div className="space-y-6">
           <Card>
             <CardHeader className="border-0 pb-2 flex flex-row items-center justify-between">
-              <CardTitle className="text-xs font-bold text-text-2 uppercase">Top Clients by Revenue</CardTitle>
+              <CardTitle className="text-xs font-bold text-text-2 uppercase">
+                Top Clients by Revenue
+              </CardTitle>
               <Users size={14} className="text-text-3" />
             </CardHeader>
             <CardContent className="divide-y divide-border/60">
               {dashboard.topClients.length === 0 ? (
-                <div className="text-center py-8 text-text-3 text-xs">Add clients in CRM to track rankings.</div>
+                <div className="text-center py-8 text-text-3 text-xs">
+                  Add clients in CRM to track rankings.
+                </div>
               ) : (
                 dashboard.topClients.map((client: any) => (
-                  <div key={client.id} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
+                  <div
+                    key={client.id}
+                    className="flex items-center justify-between py-3 first:pt-0 last:pb-0"
+                  >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center text-accent text-xs font-bold uppercase">
                         {client.name[0]}
@@ -288,8 +364,12 @@ function DashboardPage() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs font-bold text-success">{formatCurrency(client.revenue)}</p>
-                      <p className="text-[9px] text-text-3 uppercase tracking-wider font-semibold">Total Revenue</p>
+                      <p className="text-xs font-bold text-success">
+                        {formatCurrency(client.revenue)}
+                      </p>
+                      <p className="text-[9px] text-text-3 uppercase tracking-wider font-semibold">
+                        Total Revenue
+                      </p>
                     </div>
                   </div>
                 ))
@@ -300,28 +380,63 @@ function DashboardPage() {
       </div>
 
       {/* Forms Drawer Modals */}
-      <Modal isOpen={isClientOpen} onClose={() => setIsClientOpen(false)} title="Add New CRM Client" type="right">
+      <Modal
+        isOpen={isClientOpen}
+        onClose={() => setIsClientOpen(false)}
+        title="Add New CRM Client"
+        type="right"
+      >
         <ClientForm onSuccess={handleSuccess} onCancel={() => setIsClientOpen(false)} />
       </Modal>
 
-      <Modal isOpen={isProjectOpen} onClose={() => setIsProjectOpen(false)} title="Start New Project Contract" type="right">
+      <Modal
+        isOpen={isProjectOpen}
+        onClose={() => setIsProjectOpen(false)}
+        title="Start New Project Contract"
+        type="right"
+      >
         {clientsList.length === 0 ? (
           <div className="py-8 text-center space-y-4">
-            <p className="text-sm text-text-2">You need to add a client in CRM before creating a project.</p>
-            <Button size="sm" onClick={() => { setIsClientOpen(true); setIsProjectOpen(false); }}>
+            <p className="text-sm text-text-2">
+              You need to add a client in CRM before creating a project.
+            </p>
+            <Button
+              size="sm"
+              onClick={() => {
+                setIsClientOpen(true)
+                setIsProjectOpen(false)
+              }}
+            >
               Add Client First
             </Button>
           </div>
         ) : (
-          <ProjectForm clientsList={clientsList} onSuccess={handleSuccess} onCancel={() => setIsProjectOpen(false)} />
+          <ProjectForm
+            clientsList={clientsList}
+            onSuccess={handleSuccess}
+            onCancel={() => setIsProjectOpen(false)}
+          />
         )}
       </Modal>
 
-      <Modal isOpen={isTimeOpen} onClose={() => setIsTimeOpen(false)} title="Log Billable Time" type="right">
+      <Modal
+        isOpen={isTimeOpen}
+        onClose={() => setIsTimeOpen(false)}
+        title="Log Billable Time"
+        type="right"
+      >
         {projectsList.length === 0 ? (
           <div className="py-8 text-center space-y-4">
-            <p className="text-sm text-text-2">You need to start a project contract before logging time.</p>
-            <Button size="sm" onClick={() => { setIsProjectOpen(true); setIsTimeOpen(false); }}>
+            <p className="text-sm text-text-2">
+              You need to start a project contract before logging time.
+            </p>
+            <Button
+              size="sm"
+              onClick={() => {
+                setIsProjectOpen(true)
+                setIsTimeOpen(false)
+              }}
+            >
               Create Project First
             </Button>
           </div>

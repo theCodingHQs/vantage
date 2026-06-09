@@ -19,11 +19,14 @@ export const Route = createFileRoute('/portal/$slug')({
 })
 
 function PublicClientPortalPage() {
-  const { portal, freelancer, client, activeProjects, activeInvoices, proposals } = Route.useLoaderData()
+  const { portal, freelancer, client, activeProjects, activeInvoices, proposals } =
+    Route.useLoaderData()
   const router = useRouter()
 
   // State
-  const [activeTab, setActiveTab] = useState<'overview' | 'invoices' | 'messages' | 'proposals'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'invoices' | 'messages' | 'proposals'>(
+    'overview'
+  )
   const [messageText, setMessageText] = useState('')
   const [sendingMsg, setSendingMsg] = useState(false)
 
@@ -43,8 +46,8 @@ function PublicClientPortalPage() {
         data: {
           portalId: portal.id,
           senderType: 'client',
-          content: messageText
-        }
+          content: messageText,
+        },
       })
       setMessageText('')
       router.invalidate() // reload chat thread
@@ -61,13 +64,15 @@ function PublicClientPortalPage() {
       const updated = await acceptProposal({
         data: {
           id: selectedProposal.id,
-          signatureText
-        }
+          signatureText,
+        },
       })
       setSelectedProposal(updated)
       setIsSignOpen(false)
       setSignatureText('')
-      setProposalActionStatus('Proposal signed and accepted! An active project contract has been initialized.')
+      setProposalActionStatus(
+        'Proposal signed and accepted! An active project contract has been initialized.'
+      )
       router.invalidate()
     } catch (err) {
       console.error(err)
@@ -92,7 +97,7 @@ function PublicClientPortalPage() {
     <div className="min-h-screen bg-bg text-text-1 flex flex-col relative overflow-hidden">
       {/* Glare effects */}
       <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-accent/5 blur-[120px] pointer-events-none" />
-      
+
       {/* Portal Top Bar */}
       <header className="h-16 border-b border-border bg-surface/40 backdrop-blur-md sticky top-0 z-20 flex items-center justify-between px-6 md:px-12">
         <div className="flex items-center gap-2">
@@ -103,7 +108,9 @@ function PublicClientPortalPage() {
             <span className="font-semibold text-text-1 tracking-tight text-sm block">
               {freelancer?.businessName || `${freelancer?.name}'s Workspace`}
             </span>
-            <span className="text-[10px] text-text-3 font-semibold uppercase tracking-wider">Collaborative Client Portal</span>
+            <span className="text-[10px] text-text-3 font-semibold uppercase tracking-wider">
+              Collaborative Client Portal
+            </span>
           </div>
         </div>
         <div>
@@ -113,16 +120,18 @@ function PublicClientPortalPage() {
 
       {/* Main Content shell */}
       <main className="flex-1 max-w-5xl w-full mx-auto px-6 md:px-12 py-8 space-y-6">
-        
         {/* Welcome message greeting */}
         <Card className="bg-gradient-to-br from-surface to-surface-2/40 border-accent/20">
           <CardHeader className="pb-1 border-0">
-            <CardTitle className="text-xs font-bold text-accent uppercase tracking-wider">Greetings {client?.name}</CardTitle>
+            <CardTitle className="text-xs font-bold text-accent uppercase tracking-wider">
+              Greetings {client?.name}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <h2 className="text-2xl font-bold text-text-1">Collaboration Hub</h2>
             <p className="text-xs text-text-2 mt-2 leading-relaxed max-w-2xl">
-              {portal.customMessage || 'Welcome to our client workspace portal. Here you can check project deliverables, invoice status, and communicate directly.'}
+              {portal.customMessage ||
+                'Welcome to our client workspace portal. Here you can check project deliverables, invoice status, and communicate directly.'}
             </p>
           </CardContent>
         </Card>
@@ -189,14 +198,17 @@ function PublicClientPortalPage() {
               activeProjects.map((p) => {
                 const completedTasks = p.tasks.filter((t: any) => t.status === 'done').length
                 const totalTasks = p.tasks.length
-                const progressPercent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
-                
+                const progressPercent =
+                  totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
+
                 return (
                   <Card key={p.id} className="space-y-4">
                     <div className="flex items-center justify-between border-b border-border/60 pb-3">
                       <div>
                         <h3 className="text-sm font-bold text-text-1">{p.title}</h3>
-                        <p className="text-[10px] text-text-3 mt-0.5">Estimated milestones & tasks board</p>
+                        <p className="text-[10px] text-text-3 mt-0.5">
+                          Estimated milestones & tasks board
+                        </p>
                       </div>
                       <Badge variant="success">Active</Badge>
                     </div>
@@ -205,7 +217,9 @@ function PublicClientPortalPage() {
                     <div className="space-y-2">
                       <div className="flex justify-between items-center text-xs">
                         <span className="text-text-2">Task Milestones Completed</span>
-                        <span className="text-text-1 font-bold">{completedTasks} of {totalTasks} ({progressPercent}%)</span>
+                        <span className="text-text-1 font-bold">
+                          {completedTasks} of {totalTasks} ({progressPercent}%)
+                        </span>
                       </div>
                       <div className="w-full bg-border h-2 rounded-full overflow-hidden">
                         <div
@@ -217,13 +231,18 @@ function PublicClientPortalPage() {
 
                     {/* Tasks checklist */}
                     <div className="space-y-2.5 pt-2">
-                      <h4 className="text-[10px] font-bold text-text-3 uppercase tracking-wider">Project Checklist</h4>
+                      <h4 className="text-[10px] font-bold text-text-3 uppercase tracking-wider">
+                        Project Checklist
+                      </h4>
                       {p.tasks.length === 0 ? (
                         <p className="text-xs text-text-3 italic">Checklist initializing...</p>
                       ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                           {p.tasks.map((task: any) => (
-                            <div key={task.id} className="p-2.5 bg-surface-2 border border-border rounded-lg flex items-center justify-between">
+                            <div
+                              key={task.id}
+                              className="p-2.5 bg-surface-2 border border-border rounded-lg flex items-center justify-between"
+                            >
                               <span className="text-xs text-text-1 font-medium">{task.title}</span>
                               <Badge variant={task.status === 'done' ? 'success' : 'secondary'}>
                                 {task.status === 'done' ? 'Completed' : 'Pending'}
@@ -250,10 +269,14 @@ function PublicClientPortalPage() {
             >
               {activeInvoices.map((inv) => (
                 <TableRow key={inv.id}>
-                  <TableCell className="font-semibold text-text-1 font-mono">{inv.invoiceNumber}</TableCell>
+                  <TableCell className="font-semibold text-text-1 font-mono">
+                    {inv.invoiceNumber}
+                  </TableCell>
                   <TableCell>{formatDate(inv.issueDate)}</TableCell>
                   <TableCell>{formatDate(inv.dueDate)}</TableCell>
-                  <TableCell className="font-bold text-text-1">{formatCurrency(inv.total)}</TableCell>
+                  <TableCell className="font-bold text-text-1">
+                    {formatCurrency(inv.total)}
+                  </TableCell>
                   <TableCell>
                     <Badge variant={inv.status === 'paid' ? 'success' : 'warning'}>
                       {inv.status}
@@ -281,7 +304,11 @@ function PublicClientPortalPage() {
                     className="min-h-[80px]"
                   />
                   <div className="flex justify-end">
-                    <Button type="submit" disabled={sendingMsg} className="flex items-center gap-1 text-xs">
+                    <Button
+                      type="submit"
+                      disabled={sendingMsg}
+                      className="flex items-center gap-1 text-xs"
+                    >
                       <Send size={12} /> Send Message
                     </Button>
                   </div>
@@ -311,8 +338,15 @@ function PublicClientPortalPage() {
                         }`}
                       >
                         <div className="flex justify-between items-center gap-6 mb-1 text-[9px] font-semibold text-text-3">
-                          <span>{isClient ? 'You (Client)' : freelancer?.name || 'Freelancer'}</span>
-                          <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                          <span>
+                            {isClient ? 'You (Client)' : freelancer?.name || 'Freelancer'}
+                          </span>
+                          <span>
+                            {new Date(msg.createdAt).toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </span>
                         </div>
                         <p className="whitespace-pre-line">{msg.content}</p>
                       </div>
@@ -333,24 +367,29 @@ function PublicClientPortalPage() {
               emptyMessage="No proposals have been shared with you yet."
             >
               {proposals.map((p: any) => (
-                <TableRow key={p.id} onClick={() => {
-                  setSelectedProposal(p)
-                  setSignatureText('')
-                  setProposalActionStatus(null)
-                }}>
+                <TableRow
+                  key={p.id}
+                  onClick={() => {
+                    setSelectedProposal(p)
+                    setSignatureText('')
+                    setProposalActionStatus(null)
+                  }}
+                >
                   <TableCell className="font-semibold text-text-1">{p.title}</TableCell>
                   <TableCell>{p.validUntil ? formatDate(p.validUntil) : '—'}</TableCell>
-                  <TableCell className="font-bold text-text-1">{formatCurrency(p.totalValue)}</TableCell>
+                  <TableCell className="font-bold text-text-1">
+                    {formatCurrency(p.totalValue)}
+                  </TableCell>
                   <TableCell>
                     <Badge
                       variant={
                         p.status === 'accepted'
                           ? 'success'
                           : p.status === 'sent' || p.status === 'viewed'
-                          ? 'primary'
-                          : p.status === 'declined'
-                          ? 'danger'
-                          : 'secondary'
+                            ? 'primary'
+                            : p.status === 'declined'
+                              ? 'danger'
+                              : 'secondary'
                       }
                     >
                       {p.status}
@@ -366,11 +405,15 @@ function PublicClientPortalPage() {
             </Table>
           </div>
         )}
-
       </main>
 
       {/* PROPOSAL PREVIEW DRAWER */}
-      <Modal isOpen={selectedProposal !== null} onClose={() => setSelectedProposal(null)} title="Review Project Proposal" type="right">
+      <Modal
+        isOpen={selectedProposal !== null}
+        onClose={() => setSelectedProposal(null)}
+        title="Review Project Proposal"
+        type="right"
+      >
         {selectedProposal && (
           <div className="space-y-6">
             {/* Action Header controls */}
@@ -379,19 +422,32 @@ function PublicClientPortalPage() {
                 <Badge variant={selectedProposal.status === 'accepted' ? 'success' : 'primary'}>
                   {selectedProposal.status}
                 </Badge>
-                <span className="text-xs text-text-3 font-semibold uppercase">{formatCurrency(selectedProposal.totalValue)}</span>
+                <span className="text-xs text-text-3 font-semibold uppercase">
+                  {formatCurrency(selectedProposal.totalValue)}
+                </span>
               </div>
               <div className="flex gap-1.5">
-                {selectedProposal.status !== 'accepted' && selectedProposal.status !== 'declined' && (
-                  <>
-                    <Button size="sm" variant="danger" onClick={handleDeclineProposal} className="text-xs">
-                      Decline
-                    </Button>
-                    <Button size="sm" variant="secondary" onClick={() => setIsSignOpen(true)} className="text-xs">
-                      Sign / Accept Proposal
-                    </Button>
-                  </>
-                )}
+                {selectedProposal.status !== 'accepted' &&
+                  selectedProposal.status !== 'declined' && (
+                    <>
+                      <Button
+                        size="sm"
+                        variant="danger"
+                        onClick={handleDeclineProposal}
+                        className="text-xs"
+                      >
+                        Decline
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => setIsSignOpen(true)}
+                        className="text-xs"
+                      >
+                        Sign / Accept Proposal
+                      </Button>
+                    </>
+                  )}
               </div>
             </div>
 
@@ -404,20 +460,29 @@ function PublicClientPortalPage() {
             {/* Proposal visual container */}
             <div className="p-6 border border-border bg-surface rounded-xl space-y-6 text-sm text-text-2">
               <div className="border-b border-border/60 pb-4">
-                <span className="text-[10px] text-text-3 font-bold uppercase tracking-wider block">Project Proposal</span>
-                <h3 className="text-base font-extrabold text-text-1 mt-1">{selectedProposal.title}</h3>
-                <p className="text-xs text-text-3 mt-1">Prepared by: {freelancer?.name} &middot; {freelancer?.businessName}</p>
+                <span className="text-[10px] text-text-3 font-bold uppercase tracking-wider block">
+                  Project Proposal
+                </span>
+                <h3 className="text-base font-extrabold text-text-1 mt-1">
+                  {selectedProposal.title}
+                </h3>
+                <p className="text-xs text-text-3 mt-1">
+                  Prepared by: {freelancer?.name} &middot; {freelancer?.businessName}
+                </p>
               </div>
 
               <div className="space-y-2">
                 <h5 className="text-xs font-bold text-text-3 uppercase">1. Executive Summary</h5>
                 <p className="text-xs text-text-2 leading-relaxed italic">
-                  {selectedProposal.contentJson?.intro || 'We propose to assist you in this contract.'}
+                  {selectedProposal.contentJson?.intro ||
+                    'We propose to assist you in this contract.'}
                 </p>
               </div>
 
               <div className="space-y-2 pt-3 border-t border-border/40">
-                <h5 className="text-xs font-bold text-text-3 uppercase">2. Scope of Deliverables</h5>
+                <h5 className="text-xs font-bold text-text-3 uppercase">
+                  2. Scope of Deliverables
+                </h5>
                 <ul className="list-disc pl-5 space-y-1.5 text-xs text-text-2">
                   {(selectedProposal.contentJson?.scope || []).map((item: string, idx: number) => (
                     <li key={idx}>{item}</li>
@@ -428,18 +493,28 @@ function PublicClientPortalPage() {
               <div className="space-y-2 pt-3 border-t border-border/40 flex justify-between items-center text-xs">
                 <div>
                   <h5 className="text-xs font-bold text-text-3 uppercase">3. Valuation Summary</h5>
-                  <p className="text-xs text-text-2 mt-1">Total estimated fixed budget for work scope.</p>
+                  <p className="text-xs text-text-2 mt-1">
+                    Total estimated fixed budget for work scope.
+                  </p>
                 </div>
-                <span className="text-base font-extrabold text-success">{formatCurrency(selectedProposal.totalValue)}</span>
+                <span className="text-base font-extrabold text-success">
+                  {formatCurrency(selectedProposal.totalValue)}
+                </span>
               </div>
 
               {/* Signature display block */}
               {selectedProposal.status === 'accepted' && (
                 <div className="p-4 border border-success/30 bg-success/[0.02] rounded-xl flex items-center justify-between text-xs">
                   <div>
-                    <span className="text-[10px] text-success font-bold uppercase tracking-wider block">Electronically Signed</span>
-                    <p className="font-mono text-text-1 font-semibold mt-1">By: {selectedProposal.signatureUrl}</p>
-                    <p className="text-[9px] text-text-3 mt-0.5">Timestamp: {formatDate(selectedProposal.respondedAt)}</p>
+                    <span className="text-[10px] text-success font-bold uppercase tracking-wider block">
+                      Electronically Signed
+                    </span>
+                    <p className="font-mono text-text-1 font-semibold mt-1">
+                      By: {selectedProposal.signatureUrl}
+                    </p>
+                    <p className="text-[9px] text-text-3 mt-0.5">
+                      Timestamp: {formatDate(selectedProposal.respondedAt)}
+                    </p>
                   </div>
                   <Lock size={20} className="text-success" />
                 </div>
@@ -450,9 +525,17 @@ function PublicClientPortalPage() {
       </Modal>
 
       {/* SIGNATURE CAPTURE MODAL */}
-      <Modal isOpen={isSignOpen} onClose={() => setIsSignOpen(false)} title="Sign Proposal & Accept Contract" type="center">
+      <Modal
+        isOpen={isSignOpen}
+        onClose={() => setIsSignOpen(false)}
+        title="Sign Proposal & Accept Contract"
+        type="center"
+      >
         <div className="space-y-4">
-          <p className="text-xs text-text-2">Type your full name below to electronically authorize this proposal. Upon submission, this will lock the contract and initialize a project dashboard.</p>
+          <p className="text-xs text-text-2">
+            Type your full name below to electronically authorize this proposal. Upon submission,
+            this will lock the contract and initialize a project dashboard.
+          </p>
           <Input
             label="Type Your Signature Name *"
             placeholder="e.g. Jane Doe"

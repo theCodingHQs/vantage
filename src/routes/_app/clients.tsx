@@ -1,6 +1,13 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
-import { getClients, createClient, updateClient, getDeals, createDeal, updateDealStatus } from '#/server/functions/crm'
+import {
+  getClients,
+  createClient,
+  updateClient,
+  getDeals,
+  createDeal,
+  updateDealStatus,
+} from '#/server/functions/crm'
 import { getProjects } from '#/server/functions/projects'
 import { getInvoices } from '#/server/functions/invoicing'
 import { Button } from '#/components/ui/button'
@@ -10,19 +17,19 @@ import { Table, TableRow, TableCell } from '#/components/ui/table'
 import { Modal } from '#/components/ui/modal'
 import { ClientForm } from '#/components/forms/client-form'
 import { formatCurrency, formatDate } from '#/lib/utils'
-import { 
-  Plus, 
-  Search, 
-  KanbanSquare, 
-  ListFilter, 
-  Grid, 
-  Briefcase, 
-  FileText, 
-  File, 
-  Calendar, 
-  Clock, 
+import {
+  Plus,
+  Search,
+  KanbanSquare,
+  ListFilter,
+  Grid,
+  Briefcase,
+  FileText,
+  File,
+  Calendar,
+  Clock,
   ArrowRight,
-  TrendingUp
+  TrendingUp,
 } from 'lucide-react'
 import { z } from 'zod'
 
@@ -48,8 +55,10 @@ function ClientsPage() {
   const [isAddClientOpen, setIsAddClientOpen] = useState(false)
   const [isAddDealOpen, setIsAddDealOpen] = useState(false)
   const [selectedClient, setSelectedClient] = useState<any | null>(null)
-  const [activeDetailTab, setActiveDetailTab] = useState<'overview' | 'projects' | 'invoices' | 'notes'>('overview')
-  
+  const [activeDetailTab, setActiveDetailTab] = useState<
+    'overview' | 'projects' | 'invoices' | 'notes'
+  >('overview')
+
   // Deal Form State
   const [dealTitle, setDealTitle] = useState('')
   const [dealValue, setDealValue] = useState('')
@@ -62,7 +71,9 @@ function ClientsPage() {
   // Drag and Drop State
   const [draggingDealId, setDraggingDealId] = useState<string | null>(null)
   const [processingDealId, setProcessingDealId] = useState<string | null>(null)
-  const [processingTargetStatus, setProcessingTargetStatus] = useState<'lead' | 'proposal' | 'negotiation' | 'won' | 'lost' | null>(null)
+  const [processingTargetStatus, setProcessingTargetStatus] = useState<
+    'lead' | 'proposal' | 'negotiation' | 'won' | 'lost' | null
+  >(null)
 
   const handleCreateClientSuccess = () => {
     setIsAddClientOpen(false)
@@ -84,8 +95,8 @@ function ClientsPage() {
           probability: 50,
           expectedCloseDate: null,
           notes: '',
-          lostReason: ''
-        }
+          lostReason: '',
+        },
       })
       setIsAddDealOpen(false)
       setDealTitle('')
@@ -115,8 +126,8 @@ function ClientsPage() {
             address: selectedClient.address || '',
             notes: notesText,
             tags: [],
-          }
-        }
+          },
+        },
       })
       setSelectedClient(updated)
       router.invalidate()
@@ -128,10 +139,11 @@ function ClientsPage() {
   }
 
   // Filter clients
-  const filteredClients = clientsList.filter(c => {
-    const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase()) || 
-                          (c.company && c.company.toLowerCase().includes(search.toLowerCase())) ||
-                          (c.email && c.email.toLowerCase().includes(search.toLowerCase()))
+  const filteredClients = clientsList.filter((c) => {
+    const matchesSearch =
+      c.name.toLowerCase().includes(search.toLowerCase()) ||
+      (c.company && c.company.toLowerCase().includes(search.toLowerCase())) ||
+      (c.email && c.email.toLowerCase().includes(search.toLowerCase()))
     const matchesStatus = filterStatus === 'all' || c.status === filterStatus
     return matchesSearch && matchesStatus
   })
@@ -146,7 +158,10 @@ function ClientsPage() {
     e.preventDefault()
   }
 
-  const handleDrop = async (e: React.DragEvent, targetStatus: 'lead' | 'proposal' | 'negotiation' | 'won' | 'lost') => {
+  const handleDrop = async (
+    e: React.DragEvent,
+    targetStatus: 'lead' | 'proposal' | 'negotiation' | 'won' | 'lost'
+  ) => {
     e.preventDefault()
     if (!draggingDealId) return
 
@@ -160,8 +175,8 @@ function ClientsPage() {
         data: {
           id: dealId,
           status: targetStatus,
-          lostReason: targetStatus === 'lost' ? 'Declined by client during negotiation' : undefined
-        }
+          lostReason: targetStatus === 'lost' ? 'Declined by client during negotiation' : undefined,
+        },
       })
       router.invalidate()
     } catch (err) {
@@ -173,7 +188,10 @@ function ClientsPage() {
   }
 
   // Group deals by status
-  const columns: { id: 'lead' | 'proposal' | 'negotiation' | 'won' | 'lost'; title: string }[] = [
+  const columns: {
+    id: 'lead' | 'proposal' | 'negotiation' | 'won' | 'lost'
+    title: string
+  }[] = [
     { id: 'lead', title: 'Leads' },
     { id: 'proposal', title: 'Proposal Sent' },
     { id: 'negotiation', title: 'Negotiation' },
@@ -203,18 +221,29 @@ function ClientsPage() {
             <button
               onClick={() => setViewMode('pipeline')}
               className={`p-1.5 rounded text-xs font-semibold flex items-center gap-1.5 cursor-pointer ${
-                viewMode === 'pipeline' ? 'bg-surface-2 text-text-1' : 'text-text-2 hover:text-text-1'
+                viewMode === 'pipeline'
+                  ? 'bg-surface-2 text-text-1'
+                  : 'text-text-2 hover:text-text-1'
               }`}
             >
               <KanbanSquare size={14} /> Sales Pipeline
             </button>
           </div>
 
-          <Button size="sm" onClick={() => setIsAddClientOpen(true)} className="flex items-center gap-1">
+          <Button
+            size="sm"
+            onClick={() => setIsAddClientOpen(true)}
+            className="flex items-center gap-1"
+          >
             <Plus size={14} /> Add Client
           </Button>
           {viewMode === 'pipeline' && (
-            <Button size="sm" variant="secondary" onClick={() => setIsAddDealOpen(true)} className="flex items-center gap-1">
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => setIsAddDealOpen(true)}
+              className="flex items-center gap-1"
+            >
               <Plus size={14} /> New Deal
             </Button>
           )}
@@ -252,7 +281,14 @@ function ClientsPage() {
       {/* CONTACT LIST VIEW */}
       {viewMode === 'list' && (
         <Table
-          headers={['Client Name', 'Company', 'Status', 'Total Revenue', 'Last Contact', 'Created At']}
+          headers={[
+            'Client Name',
+            'Company',
+            'Status',
+            'Total Revenue',
+            'Last Contact',
+            'Created At',
+          ]}
           isEmpty={filteredClients.length === 0}
           emptyMessage="No CRM contacts match your search."
         >
@@ -283,15 +319,19 @@ function ClientsPage() {
                     client.status === 'active'
                       ? 'success'
                       : client.status === 'prospect'
-                      ? 'primary'
-                      : 'secondary'
+                        ? 'primary'
+                        : 'secondary'
                   }
                 >
                   {client.status}
                 </Badge>
               </TableCell>
-              <TableCell className="text-success font-bold">{formatCurrency(client.totalRevenue)}</TableCell>
-              <TableCell>{client.lastContactAt ? formatDate(client.lastContactAt) : 'Never'}</TableCell>
+              <TableCell className="text-success font-bold">
+                {formatCurrency(client.totalRevenue)}
+              </TableCell>
+              <TableCell>
+                {client.lastContactAt ? formatDate(client.lastContactAt) : 'Never'}
+              </TableCell>
               <TableCell>{formatDate(client.createdAt)}</TableCell>
             </TableRow>
           ))}
@@ -300,20 +340,22 @@ function ClientsPage() {
 
       {/* SALES PIPELINE KANBAN VIEW */}
       {viewMode === 'pipeline' && (
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 h-[70vh] overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 h-[80vh] overflow-hidden ">
           {columns.map((col) => {
-            const columnDeals = dealsList.map(d => {
-              if (d.deal.id === processingDealId && processingTargetStatus) {
-                return {
-                  ...d,
-                  deal: {
-                    ...d.deal,
-                    status: processingTargetStatus
+            const columnDeals = dealsList
+              .map((d) => {
+                if (d.deal.id === processingDealId && processingTargetStatus) {
+                  return {
+                    ...d,
+                    deal: {
+                      ...d.deal,
+                      status: processingTargetStatus,
+                    },
                   }
                 }
-              }
-              return d
-            }).filter(d => d.deal.status === col.id)
+                return d
+              })
+              .filter((d) => d.deal.status === col.id)
             return (
               <div
                 key={col.id}
@@ -322,7 +364,9 @@ function ClientsPage() {
                 className="bg-surface border border-border/80 rounded-xl p-3 flex flex-col h-full overflow-y-auto"
               >
                 <div className="flex items-center justify-between pb-3 border-b border-border/60 mb-3">
-                  <h3 className="text-xs font-bold text-text-2 uppercase tracking-wide">{col.title}</h3>
+                  <h3 className="text-xs font-bold text-text-2 uppercase tracking-wide">
+                    {col.title}
+                  </h3>
                   <Badge variant="secondary">{columnDeals.length}</Badge>
                 </div>
 
@@ -351,14 +395,20 @@ function ClientsPage() {
                               <span>Updating...</span>
                             </div>
                           )}
-                          <h4 className="text-xs font-semibold text-text-1 group-hover:text-accent transition-colors">{deal.title}</h4>
+                          <h4 className="text-xs font-semibold text-text-1 group-hover:text-accent transition-colors">
+                            {deal.title}
+                          </h4>
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] text-text-2">{clientName}</span>
-                            <span className="text-xs font-bold text-success">{formatCurrency(deal.value)}</span>
+                            <span className="text-xs font-bold text-success">
+                              {formatCurrency(deal.value)}
+                            </span>
                           </div>
                           <div className="flex items-center justify-between pt-1 text-[9px] text-text-3 border-t border-border/40">
                             <span>Prob: {deal.probability}%</span>
-                            <span className="flex items-center gap-0.5 text-accent"><TrendingUp size={10} /> Active</span>
+                            <span className="flex items-center gap-0.5 text-accent">
+                              <TrendingUp size={10} /> Active
+                            </span>
                           </div>
                         </div>
                       )
@@ -372,12 +422,25 @@ function ClientsPage() {
       )}
 
       {/* ADD CLIENT MODAL */}
-      <Modal isOpen={isAddClientOpen} onClose={() => setIsAddClientOpen(false)} title="Add New Client Profile" type="right">
-        <ClientForm onSuccess={handleCreateClientSuccess} onCancel={() => setIsAddClientOpen(false)} />
+      <Modal
+        isOpen={isAddClientOpen}
+        onClose={() => setIsAddClientOpen(false)}
+        title="Add New Client Profile"
+        type="right"
+      >
+        <ClientForm
+          onSuccess={handleCreateClientSuccess}
+          onCancel={() => setIsAddClientOpen(false)}
+        />
       </Modal>
 
       {/* ADD DEAL MODAL */}
-      <Modal isOpen={isAddDealOpen} onClose={() => setIsAddDealOpen(false)} title="New Pipeline Deal" type="center">
+      <Modal
+        isOpen={isAddDealOpen}
+        onClose={() => setIsAddDealOpen(false)}
+        title="New Pipeline Deal"
+        type="center"
+      >
         <form onSubmit={handleCreateDealSubmit} className="space-y-4">
           <Input
             label="Deal Title / Opportunity *"
@@ -389,7 +452,7 @@ function ClientsPage() {
           <div className="grid grid-cols-2 gap-4">
             <Select
               label="Associated Client *"
-              options={clientsList.map(c => ({ value: c.id, label: c.name }))}
+              options={clientsList.map((c) => ({ value: c.id, label: c.name }))}
               value={dealClient}
               onChange={(e) => setDealClient(e.target.value)}
               required
@@ -408,9 +471,7 @@ function ClientsPage() {
             <Button type="button" variant="ghost" onClick={() => setIsAddDealOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit">
-              Save Deal
-            </Button>
+            <Button type="submit">Save Deal</Button>
           </div>
         </form>
       </Modal>
@@ -431,12 +492,16 @@ function ClientsPage() {
               </div>
               <div className="flex-1">
                 <h4 className="text-base font-bold text-text-1">{selectedClient.name}</h4>
-                <p className="text-xs text-text-2">{selectedClient.company || 'No company registered'}</p>
+                <p className="text-xs text-text-2">
+                  {selectedClient.company || 'No company registered'}
+                </p>
                 <div className="flex items-center gap-1.5 mt-1">
                   <Badge variant={selectedClient.status === 'active' ? 'success' : 'primary'}>
                     {selectedClient.status}
                   </Badge>
-                  <span className="text-[10px] text-text-3 font-semibold uppercase">{selectedClient.email}</span>
+                  <span className="text-[10px] text-text-3 font-semibold uppercase">
+                    {selectedClient.email}
+                  </span>
                 </div>
               </div>
             </div>
@@ -444,12 +509,20 @@ function ClientsPage() {
             {/* Financial indicators */}
             <div className="grid grid-cols-2 gap-4">
               <div className="p-3 border border-border bg-surface-2/10 rounded-xl">
-                <span className="text-[10px] text-text-3 font-bold uppercase block">Total Billing</span>
-                <span className="text-lg font-bold text-success mt-1 block">{formatCurrency(selectedClient.totalRevenue)}</span>
+                <span className="text-[10px] text-text-3 font-bold uppercase block">
+                  Total Billing
+                </span>
+                <span className="text-lg font-bold text-success mt-1 block">
+                  {formatCurrency(selectedClient.totalRevenue)}
+                </span>
               </div>
               <div className="p-3 border border-border bg-surface-2/10 rounded-xl">
-                <span className="text-[10px] text-text-3 font-bold uppercase block">Projects Count</span>
-                <span className="text-lg font-bold text-text-1 mt-1 block">{selectedClient.totalProjects} contracts</span>
+                <span className="text-[10px] text-text-3 font-bold uppercase block">
+                  Projects Count
+                </span>
+                <span className="text-lg font-bold text-text-1 mt-1 block">
+                  {selectedClient.totalProjects} contracts
+                </span>
               </div>
             </div>
 
@@ -475,14 +548,21 @@ function ClientsPage() {
               <div className="space-y-4 text-sm animate-in fade-in duration-200">
                 <div className="space-y-2">
                   <h4 className="text-xs font-bold text-text-3 uppercase">Contact Information</h4>
-                  <p className="text-text-1"><strong>Phone:</strong> {selectedClient.phone || 'N/A'}</p>
-                  <p className="text-text-1"><strong>Website:</strong> {selectedClient.website || 'N/A'}</p>
-                  <p className="text-text-1"><strong>Address:</strong> {selectedClient.address || 'N/A'}</p>
+                  <p className="text-text-1">
+                    <strong>Phone:</strong> {selectedClient.phone || 'N/A'}
+                  </p>
+                  <p className="text-text-1">
+                    <strong>Website:</strong> {selectedClient.website || 'N/A'}
+                  </p>
+                  <p className="text-text-1">
+                    <strong>Address:</strong> {selectedClient.address || 'N/A'}
+                  </p>
                 </div>
                 <div className="space-y-2 pt-2 border-t border-border/40">
                   <h4 className="text-xs font-bold text-text-3 uppercase">Profile Bio / Summary</h4>
                   <p className="text-text-2 text-xs leading-relaxed italic">
-                    {selectedClient.notes || 'No notes added yet. Use the notes tab to save details.'}
+                    {selectedClient.notes ||
+                      'No notes added yet. Use the notes tab to save details.'}
                   </p>
                 </div>
               </div>
@@ -492,20 +572,28 @@ function ClientsPage() {
             {activeDetailTab === 'projects' && (
               <div className="space-y-3 animate-in fade-in duration-200">
                 <h4 className="text-xs font-bold text-text-3 uppercase">Linked Contracts</h4>
-                {projectsList.filter(p => p.project.clientId === selectedClient.id).length === 0 ? (
+                {projectsList.filter((p) => p.project.clientId === selectedClient.id).length ===
+                0 ? (
                   <p className="text-xs text-text-3">No projects found for this client.</p>
                 ) : (
-                  projectsList.filter(p => p.project.clientId === selectedClient.id).map(p => (
-                    <div key={p.project.id} className="p-3 border border-border bg-surface-2/20 rounded-xl flex items-center justify-between">
-                      <div>
-                        <p className="text-xs font-bold text-text-1">{p.project.title}</p>
-                        <p className="text-[10px] text-text-3 mt-0.5">Model: {p.project.type} &middot; Status: {p.project.status}</p>
+                  projectsList
+                    .filter((p) => p.project.clientId === selectedClient.id)
+                    .map((p) => (
+                      <div
+                        key={p.project.id}
+                        className="p-3 border border-border bg-surface-2/20 rounded-xl flex items-center justify-between"
+                      >
+                        <div>
+                          <p className="text-xs font-bold text-text-1">{p.project.title}</p>
+                          <p className="text-[10px] text-text-3 mt-0.5">
+                            Model: {p.project.type} &middot; Status: {p.project.status}
+                          </p>
+                        </div>
+                        <Badge variant={p.project.status === 'active' ? 'success' : 'secondary'}>
+                          {p.project.status}
+                        </Badge>
                       </div>
-                      <Badge variant={p.project.status === 'active' ? 'success' : 'secondary'}>
-                        {p.project.status}
-                      </Badge>
-                    </div>
-                  ))
+                    ))
                 )}
               </div>
             )}
@@ -514,23 +602,38 @@ function ClientsPage() {
             {activeDetailTab === 'invoices' && (
               <div className="space-y-3 animate-in fade-in duration-200">
                 <h4 className="text-xs font-bold text-text-3 uppercase">Billing Statements</h4>
-                {invoicesList.filter(i => i.invoice.clientId === selectedClient.id).length === 0 ? (
+                {invoicesList.filter((i) => i.invoice.clientId === selectedClient.id).length ===
+                0 ? (
                   <p className="text-xs text-text-3">No invoices found for this client.</p>
                 ) : (
-                  invoicesList.filter(i => i.invoice.clientId === selectedClient.id).map(i => (
-                    <div key={i.invoice.id} className="p-3 border border-border bg-surface-2/20 rounded-xl flex items-center justify-between">
-                      <div>
-                        <p className="text-xs font-bold text-text-1">Invoice {i.invoice.invoiceNumber}</p>
-                        <p className="text-[10px] text-text-3 mt-0.5">Due: {formatDate(i.invoice.dueDate)}</p>
+                  invoicesList
+                    .filter((i) => i.invoice.clientId === selectedClient.id)
+                    .map((i) => (
+                      <div
+                        key={i.invoice.id}
+                        className="p-3 border border-border bg-surface-2/20 rounded-xl flex items-center justify-between"
+                      >
+                        <div>
+                          <p className="text-xs font-bold text-text-1">
+                            Invoice {i.invoice.invoiceNumber}
+                          </p>
+                          <p className="text-[10px] text-text-3 mt-0.5">
+                            Due: {formatDate(i.invoice.dueDate)}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs font-bold text-success">
+                            {formatCurrency(i.invoice.total)}
+                          </p>
+                          <Badge
+                            variant={i.invoice.status === 'paid' ? 'success' : 'warning'}
+                            className="mt-1"
+                          >
+                            {i.invoice.status}
+                          </Badge>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-xs font-bold text-success">{formatCurrency(i.invoice.total)}</p>
-                        <Badge variant={i.invoice.status === 'paid' ? 'success' : 'warning'} className="mt-1">
-                          {i.invoice.status}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))
+                    ))
                 )}
               </div>
             )}

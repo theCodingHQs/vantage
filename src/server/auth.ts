@@ -39,17 +39,20 @@ async function withRetry<T>(fn: () => Promise<T>, retries = 3, delayMs = 300): P
     } catch (err: any) {
       lastErr = err
       const errCode = err?.code || (err?.cause as any)?.code || ''
-      const isNetworkError = errCode === 'ECONNRESET' || 
-                             errCode === 'ETIMEDOUT' || 
-                             errCode === 'ECONNREFUSED' || 
-                             errCode === 'EPIPE' ||
-                             err?.message?.includes('disconnected') ||
-                             err?.message?.includes('socket') ||
-                             err?.message?.includes('network')
+      const isNetworkError =
+        errCode === 'ECONNRESET' ||
+        errCode === 'ETIMEDOUT' ||
+        errCode === 'ECONNREFUSED' ||
+        errCode === 'EPIPE' ||
+        err?.message?.includes('disconnected') ||
+        err?.message?.includes('socket') ||
+        err?.message?.includes('network')
 
       if (isNetworkError && i < retries - 1) {
-        console.warn(`⚠️ Database query failed (${errCode || err.message}). Retrying in ${delayMs}ms (attempt ${i + 1}/${retries})...`)
-        await new Promise(resolve => setTimeout(resolve, delayMs))
+        console.warn(
+          `⚠️ Database query failed (${errCode || err.message}). Retrying in ${delayMs}ms (attempt ${i + 1}/${retries})...`
+        )
+        await new Promise((resolve) => setTimeout(resolve, delayMs))
         continue
       }
       throw err
@@ -73,16 +76,19 @@ export async function createSession(
   ipAddress?: string,
   userAgent?: string
 ): Promise<string> {
-  const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+  const token =
+    Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
   const expiresAt = new Date(Date.now() + SESSION_DURATION_MS)
 
-  await withRetry(() => db.insert(sessions).values({
-    id: token,
-    userId,
-    expiresAt,
-    ipAddress,
-    userAgent,
-  }))
+  await withRetry(() =>
+    db.insert(sessions).values({
+      id: token,
+      userId,
+      expiresAt,
+      ipAddress,
+      userAgent,
+    })
+  )
 
   // Set httpOnly cookie
   setCookie(SESSION_COOKIE_NAME, token, {
@@ -133,34 +139,35 @@ export async function getSession(): Promise<{ user: SafeUser; session: UserSessi
   }
 
   // Fetch session and user
-  let results: any[] = []
+  let results: any[]
   try {
-    results = await withRetry(() => db
-      .select({
-        session: {
-          id: sessions.id,
-          userId: sessions.userId,
-          expiresAt: sessions.expiresAt,
-        },
-        user: {
-          id: users.id,
-          email: users.email,
-          name: users.name,
-          avatarUrl: users.avatarUrl,
-          plan: users.plan,
-          timezone: users.timezone,
-          currency: users.currency,
-          businessName: users.businessName,
-          businessLogoUrl: users.businessLogoUrl,
-          businessAddress: users.businessAddress,
-          onboardingCompleted: users.onboardingCompleted,
-          createdAt: users.createdAt,
-        },
-      })
-      .from(sessions)
-      .innerJoin(users, eq(sessions.userId, users.id))
-      .where(and(eq(sessions.id, token), gte(sessions.expiresAt, new Date())))
-      .limit(1)
+    results = await withRetry(() =>
+      db
+        .select({
+          session: {
+            id: sessions.id,
+            userId: sessions.userId,
+            expiresAt: sessions.expiresAt,
+          },
+          user: {
+            id: users.id,
+            email: users.email,
+            name: users.name,
+            avatarUrl: users.avatarUrl,
+            plan: users.plan,
+            timezone: users.timezone,
+            currency: users.currency,
+            businessName: users.businessName,
+            businessLogoUrl: users.businessLogoUrl,
+            businessAddress: users.businessAddress,
+            onboardingCompleted: users.onboardingCompleted,
+            createdAt: users.createdAt,
+          },
+        })
+        .from(sessions)
+        .innerJoin(users, eq(sessions.userId, users.id))
+        .where(and(eq(sessions.id, token), gte(sessions.expiresAt, new Date())))
+        .limit(1)
     )
   } catch (err) {
     console.error('❌ Failed to fetch session from database:', err)
@@ -178,12 +185,7 @@ export async function getSession(): Promise<{ user: SafeUser; session: UserSessi
   // Cache in Redis for 5 minutes
   try {
     const redis = getRedisClient()
-    await redis.set(
-      `session:${token}`,
-      JSON.stringify({ user, session }),
-      'EX',
-      300
-    )
+    await redis.set(`session:${token}`, JSON.stringify({ user, session }), 'EX', 300)
   } catch (err) {
     console.warn('⚠️ Redis cache session write failed:', err)
   }

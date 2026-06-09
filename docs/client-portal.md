@@ -5,6 +5,7 @@ Vantage provides a secure, public collaborative portal for each client to review
 ---
 
 ## 1. Portal Settings
+
 - Under **Client Portals**, click **Configure Portal** for a client.
 - Set a custom URL slug (e.g. `/portal/acme-corp`).
 - Toggle permissions: share active projects, share billing invoice history, share files, or enable messaging.
@@ -13,6 +14,7 @@ Vantage provides a secure, public collaborative portal for each client to review
 ---
 
 ## 2. Public Client View
+
 - The client clicks their secure portal URL.
 - **Projects**: Displays task lists, active milestones, and completion progress bars.
 - **Invoices**: Displays paid and outstanding billing history.

@@ -5,6 +5,7 @@ Generate premium, branded PDF receipts and track outstanding income inside Vanta
 ---
 
 ## 1. Invoice Builder
+
 - Click **+ New Invoice** to open the builder.
 - Select a client from the dropdown.
 - Add line items (service, time, expense, product) with quantity and unit price. The subtotal and total calculate live.
@@ -14,6 +15,7 @@ Generate premium, branded PDF receipts and track outstanding income inside Vanta
 ---
 
 ## 2. Invoices List & Details
+
 - Filter invoices by status: `Draft`, `Sent`, `Paid`, or `Overdue`.
 - Click on an invoice to review its layout.
 - Click the **Print Icon** to trigger browser print-to-PDF formatting (styled for clean letter printing).

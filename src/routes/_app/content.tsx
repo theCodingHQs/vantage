@@ -1,24 +1,29 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
-import { getContentItems, createContentItem, updateContentItem, deleteContentItem } from '#/server/functions/content'
+import {
+  getContentItems,
+  createContentItem,
+  updateContentItem,
+  deleteContentItem,
+} from '#/server/functions/content'
 import { Button } from '#/components/ui/button'
 import { Input, Select, Textarea } from '#/components/ui/input'
 import { Badge } from '#/components/ui/badge'
 import { Card, CardHeader, CardTitle, CardContent } from '#/components/ui/card'
 import { Modal } from '#/components/ui/modal'
 import { formatDateYYYYMMDD } from '#/lib/utils'
-import { 
-  Calendar, 
-  Plus, 
-  Search, 
-  Twitter, 
-  Linkedin, 
-  Instagram, 
-  Youtube, 
-  BookOpen, 
+import {
+  Calendar,
+  Plus,
+  Search,
+  Twitter,
+  Linkedin,
+  Instagram,
+  Youtube,
+  BookOpen,
   FileCode,
   Sparkles,
-  Trash2
+  Trash2,
 } from 'lucide-react'
 
 export const Route = createFileRoute('/_app/content')({
@@ -57,7 +62,9 @@ function ContentCalendarPage() {
 
   // Form states
   const [title, setTitle] = useState('')
-  const [platform, setPlatform] = useState<'twitter' | 'linkedin' | 'instagram' | 'youtube' | 'blog' | 'other'>('linkedin')
+  const [platform, setPlatform] = useState<
+    'twitter' | 'linkedin' | 'instagram' | 'youtube' | 'blog' | 'other'
+  >('linkedin')
   const [status, setStatus] = useState<'idea' | 'drafting' | 'scheduled' | 'published'>('idea')
   const [content, setContent] = useState('')
   const [scheduledDate, setScheduledDate] = useState(new Date().toISOString().substring(0, 10))
@@ -98,7 +105,7 @@ function ContentCalendarPage() {
     setStatus('idea')
     setContent('')
     setNotes('')
-    
+
     let initialDate = new Date().toISOString().substring(0, 10)
     if (day) {
       const pad = (n: number) => n.toString().padStart(2, '0')
@@ -137,9 +144,9 @@ function ContentCalendarPage() {
               scheduledAt: scheduledDate || null,
               mediaUrls: [],
               tags: [],
-              notes
-            }
-          }
+              notes,
+            },
+          },
         })
       } else {
         await createContentItem({
@@ -151,8 +158,8 @@ function ContentCalendarPage() {
             scheduledAt: scheduledDate || null,
             mediaUrls: [],
             tags: [],
-            notes
-          }
+            notes,
+          },
         })
       }
       setIsFormOpen(false)
@@ -184,7 +191,9 @@ function ContentCalendarPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-text-1">Content Calendar</h1>
-          <p className="text-xs text-text-2">Map social posts across X, LinkedIn, and blogs to organize your self-marketing.</p>
+          <p className="text-xs text-text-2">
+            Map social posts across X, LinkedIn, and blogs to organize your self-marketing.
+          </p>
         </div>
         <Button size="sm" onClick={() => handleOpenNewPost()} className="flex items-center gap-1">
           <Plus size={14} /> Add Content Post
@@ -197,16 +206,24 @@ function ContentCalendarPage() {
           {currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
         </h2>
         <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm" onClick={handlePrevMonth}>Prev Month</Button>
-          <Button variant="secondary" size="sm" onClick={() => setCurrentDate(new Date())}>Today</Button>
-          <Button variant="secondary" size="sm" onClick={handleNextMonth}>Next Month</Button>
+          <Button variant="secondary" size="sm" onClick={handlePrevMonth}>
+            Prev Month
+          </Button>
+          <Button variant="secondary" size="sm" onClick={() => setCurrentDate(new Date())}>
+            Today
+          </Button>
+          <Button variant="secondary" size="sm" onClick={handleNextMonth}>
+            Next Month
+          </Button>
         </div>
       </div>
 
       {/* CALENDAR WEEKDAYS HEADER */}
       <div className="grid grid-cols-7 gap-2 text-center text-xs text-text-3 font-bold uppercase tracking-wider">
-        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-          <div key={day} className="py-2">{day}</div>
+        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+          <div key={day} className="py-2">
+            {day}
+          </div>
         ))}
       </div>
 
@@ -215,15 +232,23 @@ function ContentCalendarPage() {
         {calendarCells.map((day, idx) => {
           if (day === null) {
             return (
-              <div key={`empty-${idx}`} className="bg-surface-2/10 border border-transparent rounded-xl h-28 opacity-25" />
+              <div
+                key={`empty-${idx}`}
+                className="bg-surface-2/10 border border-transparent rounded-xl h-28 opacity-25"
+              />
             )
           }
 
           // Filter posts scheduled on this date
-          const dayPosts = contentItems.filter(item => {
+          const dayPosts = contentItems.filter((item) => {
             if (!item.scheduledAt) return false
-            const dateObj = typeof item.scheduledAt === 'string' ? new Date(item.scheduledAt) : item.scheduledAt
-            return dateObj.getFullYear() === year && dateObj.getMonth() === month && dateObj.getDate() === day
+            const dateObj =
+              typeof item.scheduledAt === 'string' ? new Date(item.scheduledAt) : item.scheduledAt
+            return (
+              dateObj.getFullYear() === year &&
+              dateObj.getMonth() === month &&
+              dateObj.getDate() === day
+            )
           })
 
           const isToday = new Date().toDateString() === new Date(year, month, day).toDateString()
@@ -236,7 +261,9 @@ function ContentCalendarPage() {
                 isToday ? 'border-accent ring-1 ring-accent' : 'border-border/80'
               }`}
             >
-              <span className={`text-xs font-semibold ${isToday ? 'text-accent font-extrabold' : 'text-text-2'}`}>
+              <span
+                className={`text-xs font-semibold ${isToday ? 'text-accent font-extrabold' : 'text-text-2'}`}
+              >
                 {day}
               </span>
 
@@ -261,14 +288,21 @@ function ContentCalendarPage() {
               </div>
 
               {/* Quick Add indicator */}
-              <span className="absolute bottom-1 right-2 opacity-0 group-hover:opacity-100 text-[10px] text-accent transition-all">+ Add</span>
+              <span className="absolute bottom-1 right-2 opacity-0 group-hover:opacity-100 text-[10px] text-accent transition-all">
+                + Add
+              </span>
             </div>
           )
         })}
       </div>
 
       {/* CREATE / EDIT POST MODAL */}
-      <Modal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} title={selectedPost ? 'Edit Scheduled Post' : 'Add Content Post'} type="center">
+      <Modal
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        title={selectedPost ? 'Edit Scheduled Post' : 'Add Content Post'}
+        type="center"
+      >
         <form onSubmit={handleSavePostSubmit} className="space-y-4">
           <Input
             label="Post Title / Working Title *"
@@ -337,14 +371,25 @@ function ContentCalendarPage() {
 
           <div className="flex items-center justify-between pt-4 border-t border-border">
             {selectedPost ? (
-              <Button type="button" variant="danger" onClick={handleDeletePost} disabled={loading} className="flex items-center gap-1">
+              <Button
+                type="button"
+                variant="danger"
+                onClick={handleDeletePost}
+                disabled={loading}
+                className="flex items-center gap-1"
+              >
                 <Trash2 size={14} /> Delete
               </Button>
             ) : (
               <div />
             )}
             <div className="flex items-center gap-2">
-              <Button type="button" variant="ghost" onClick={() => setIsFormOpen(false)} disabled={loading}>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setIsFormOpen(false)}
+                disabled={loading}
+              >
                 Cancel
               </Button>
               <Button type="submit" disabled={loading}>

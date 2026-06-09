@@ -7,6 +7,7 @@ All notable changes to the Vantage Freelancer Operating System will be documente
 ## [1.0.0] — 2026-06-08
 
 ### Added
+
 - **Core Engine**: Initial release of Vantage built on TanStack Start (React 19 & Vite).
 - **Authentication**: Custom DB-backed session authentication using HttpOnly cookies, fully integrated with SSR layouts.
 - **Onboarding Wizard**: 5-step interactive onboarding capturing company branding, currencies, default rates, and initial client imports.

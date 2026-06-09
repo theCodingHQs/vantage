@@ -1,13 +1,13 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
-import { 
-  getProjects, 
-  getProjectDetail, 
-  createProject, 
-  updateProjectStatus, 
-  createTask, 
+import {
+  getProjects,
+  getProjectDetail,
+  createProject,
+  updateProjectStatus,
+  createTask,
   updateTaskStatus,
-  getTimeEntries
+  getTimeEntries,
 } from '#/server/functions/projects'
 import { getClients } from '#/server/functions/crm'
 import { Button } from '#/components/ui/button'
@@ -17,17 +17,17 @@ import { Card, CardHeader, CardTitle, CardContent } from '#/components/ui/card'
 import { Modal } from '#/components/ui/modal'
 import { ProjectForm } from '#/components/forms/project-form'
 import { formatCurrency, formatDate, durationToHours } from '#/lib/utils'
-import { 
-  Plus, 
-  Briefcase, 
-  CheckSquare, 
-  Clock, 
-  Calendar, 
+import {
+  Plus,
+  Briefcase,
+  CheckSquare,
+  Clock,
+  Calendar,
   ChevronRight,
   Sparkles,
   ArrowRight,
   TrendingUp,
-  AlertTriangle
+  AlertTriangle,
 } from 'lucide-react'
 
 export const Route = createFileRoute('/_app/projects')({
@@ -61,7 +61,9 @@ function ProjectsPage() {
   // Drag and Drop Task State
   const [draggingTaskId, setDraggingTaskId] = useState<string | null>(null)
   const [processingTaskId, setProcessingTaskId] = useState<string | null>(null)
-  const [processingTaskStatus, setProcessingTaskStatus] = useState<'todo' | 'in_progress' | 'review' | 'done' | null>(null)
+  const [processingTaskStatus, setProcessingTaskStatus] = useState<
+    'todo' | 'in_progress' | 'review' | 'done' | null
+  >(null)
 
   const handleCreateProjectSuccess = () => {
     setIsAddProjectOpen(false)
@@ -97,13 +99,13 @@ function ProjectsPage() {
           dueDate: taskDueDate || null,
           estimatedHours: parseFloat(taskEstHours) || 0,
           description: '',
-          assigneeNotes: ''
-        }
+          assigneeNotes: '',
+        },
       })
       setIsAddTaskOpen(false)
       setTaskTitle('')
       setTaskDueDate('')
-      
+
       // Refresh details
       const detail = await getProjectDetail({ data: { id: selectedProjectId } })
       setProjectDetail(detail)
@@ -123,7 +125,10 @@ function ProjectsPage() {
     e.preventDefault()
   }
 
-  const handleTaskDrop = async (e: React.DragEvent, targetStatus: 'todo' | 'in_progress' | 'review' | 'done') => {
+  const handleTaskDrop = async (
+    e: React.DragEvent,
+    targetStatus: 'todo' | 'in_progress' | 'review' | 'done'
+  ) => {
     e.preventDefault()
     if (!draggingTaskId || !selectedProjectId) return
 
@@ -136,8 +141,8 @@ function ProjectsPage() {
       await updateTaskStatus({
         data: {
           id: taskId,
-          status: targetStatus
-        }
+          status: targetStatus,
+        },
       })
 
       // Refresh details
@@ -178,9 +183,15 @@ function ProjectsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-text-1">Projects & Tasks</h1>
-          <p className="text-xs text-text-2">Track client milestones, task boards, and time estimates.</p>
+          <p className="text-xs text-text-2">
+            Track client milestones, task boards, and time estimates.
+          </p>
         </div>
-        <Button size="sm" onClick={() => setIsAddProjectOpen(true)} className="flex items-center gap-1">
+        <Button
+          size="sm"
+          onClick={() => setIsAddProjectOpen(true)}
+          className="flex items-center gap-1"
+        >
           <Plus size={14} /> New Project
         </Button>
       </div>
@@ -190,7 +201,9 @@ function ProjectsPage() {
         <div className="text-center py-20 bg-surface-2/10 border border-dashed border-border rounded-xl">
           <Briefcase className="h-10 w-10 text-text-3 mx-auto mb-4" />
           <h3 className="text-sm font-semibold text-text-2">No active projects found</h3>
-          <p className="text-xs text-text-3 mt-1.5 mb-6">Create a project to start logging hours and billing clients.</p>
+          <p className="text-xs text-text-3 mt-1.5 mb-6">
+            Create a project to start logging hours and billing clients.
+          </p>
           <Button size="sm" onClick={() => setIsAddProjectOpen(true)}>
             Start Your First Project
           </Button>
@@ -198,9 +211,11 @@ function ProjectsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {projectsList.map(({ project, clientName }) => {
-            const timeEntriesForProject = timeEntriesList.filter(t => t.entry.projectId === project.id)
+            const timeEntriesForProject = timeEntriesList.filter(
+              (t) => t.entry.projectId === project.id
+            )
             let loggedMinutes = 0
-            timeEntriesForProject.forEach(t => loggedMinutes += t.entry.durationMinutes)
+            timeEntriesForProject.forEach((t) => (loggedMinutes += t.entry.durationMinutes))
             const hoursLogged = Math.round((loggedMinutes / 60) * 10) / 10
 
             return (
@@ -211,13 +226,17 @@ function ProjectsPage() {
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="text-[10px] text-text-3 font-semibold uppercase">{clientName}</span>
+                    <span className="text-[10px] text-text-3 font-semibold uppercase">
+                      {clientName}
+                    </span>
                     <Badge variant={project.status === 'active' ? 'success' : 'primary'}>
                       {project.status}
                     </Badge>
                   </div>
                   <h3 className="text-sm font-bold text-text-1 truncate">{project.title}</h3>
-                  <p className="text-xs text-text-2 mt-1.5 line-clamp-2 min-h-[32px]">{project.description || 'No description provided'}</p>
+                  <p className="text-xs text-text-2 mt-1.5 line-clamp-2 min-h-[32px]">
+                    {project.description || 'No description provided'}
+                  </p>
                 </div>
 
                 <div className="pt-4 mt-4 border-t border-border/60 flex items-center justify-between text-xs text-text-2">
@@ -227,7 +246,9 @@ function ProjectsPage() {
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="font-bold text-success">
-                      {project.type === 'hourly' ? `${formatCurrency(project.hourlyRate)}/hr` : formatCurrency(project.budget)}
+                      {project.type === 'hourly'
+                        ? `${formatCurrency(project.hourlyRate)}/hr`
+                        : formatCurrency(project.budget)}
                     </span>
                   </div>
                 </div>
@@ -238,13 +259,22 @@ function ProjectsPage() {
       )}
 
       {/* CREATE PROJECT MODAL */}
-      <Modal isOpen={isAddProjectOpen} onClose={() => setIsAddProjectOpen(false)} title="New Project Contract" type="right">
+      <Modal
+        isOpen={isAddProjectOpen}
+        onClose={() => setIsAddProjectOpen(false)}
+        title="New Project Contract"
+        type="right"
+      >
         {clientsList.length === 0 ? (
           <div className="py-8 text-center space-y-4">
             <p className="text-sm text-text-2">Add a client in CRM before creating a project.</p>
           </div>
         ) : (
-          <ProjectForm clientsList={clientsList} onSuccess={handleCreateProjectSuccess} onCancel={() => setIsAddProjectOpen(false)} />
+          <ProjectForm
+            clientsList={clientsList}
+            onSuccess={handleCreateProjectSuccess}
+            onCancel={() => setIsAddProjectOpen(false)}
+          />
         )}
       </Modal>
 
@@ -267,7 +297,9 @@ function ProjectsPage() {
             {/* Quick Header */}
             <div className="flex items-center justify-between p-4 border border-border bg-surface-2/40 rounded-xl">
               <div>
-                <span className="text-[10px] text-text-3 font-semibold uppercase">{projectDetail.client.name}</span>
+                <span className="text-[10px] text-text-3 font-semibold uppercase">
+                  {projectDetail.client.name}
+                </span>
                 <h4 className="text-sm font-bold text-text-1 mt-0.5">{projectDetail.title}</h4>
               </div>
               <Select
@@ -289,7 +321,9 @@ function ProjectsPage() {
               <div className="flex items-center justify-between text-xs">
                 <span className="text-text-2 font-medium">Budget Utilization</span>
                 <span className="text-text-1 font-bold">
-                  {formatCurrency(projectDetail.metrics.timeValue)} / {formatCurrency(projectDetail.budget)} ({projectDetail.metrics.budgetUsedPercent}%)
+                  {formatCurrency(projectDetail.metrics.timeValue)} /{' '}
+                  {formatCurrency(projectDetail.budget)} ({projectDetail.metrics.budgetUsedPercent}
+                  %)
                 </span>
               </div>
               <div className="w-full bg-border h-2 rounded-full overflow-hidden">
@@ -330,7 +364,9 @@ function ProjectsPage() {
                   <div>
                     <h5 className="text-xs font-bold text-text-3 uppercase">Start Date</h5>
                     <p className="text-xs font-medium text-text-1 mt-1">
-                      {projectDetail.startDate ? formatDate(projectDetail.startDate) : 'Not specified'}
+                      {projectDetail.startDate
+                        ? formatDate(projectDetail.startDate)
+                        : 'Not specified'}
                     </p>
                   </div>
                   <div>
@@ -348,19 +384,26 @@ function ProjectsPage() {
               <div className="space-y-4 animate-in fade-in duration-200">
                 <div className="flex justify-between items-center">
                   <h5 className="text-xs font-bold text-text-3 uppercase">Project Checklist</h5>
-                  <Button size="sm" variant="secondary" onClick={() => setIsAddTaskOpen(true)} className="flex items-center gap-1 py-1 text-xs">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setIsAddTaskOpen(true)}
+                    className="flex items-center gap-1 py-1 text-xs"
+                  >
                     <Plus size={12} /> Add Task
                   </Button>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 h-[450px] overflow-y-auto">
-                  {taskColumns.slice(0, 2).map(col => {
-                    const colTasks = projectDetail.tasks.map((t: any) => {
-                      if (t.id === processingTaskId && processingTaskStatus) {
-                        return { ...t, status: processingTaskStatus }
-                      }
-                      return t
-                    }).filter((t: any) => t.status === col.id)
+                  {taskColumns.slice(0, 2).map((col) => {
+                    const colTasks = projectDetail.tasks
+                      .map((t: any) => {
+                        if (t.id === processingTaskId && processingTaskStatus) {
+                          return { ...t, status: processingTaskStatus }
+                        }
+                        return t
+                      })
+                      .filter((t: any) => t.status === col.id)
                     return (
                       <div
                         key={col.id}
@@ -368,10 +411,14 @@ function ProjectsPage() {
                         onDrop={(e) => handleTaskDrop(e, col.id)}
                         className="bg-surface-2/30 border border-border/50 rounded-xl p-3 flex flex-col min-h-[300px]"
                       >
-                        <h6 className="text-[10px] font-bold text-text-2 uppercase mb-3 border-b border-border/60 pb-1.5">{col.title}</h6>
+                        <h6 className="text-[10px] font-bold text-text-2 uppercase mb-3 border-b border-border/60 pb-1.5">
+                          {col.title}
+                        </h6>
                         <div className="space-y-2 flex-1">
                           {colTasks.length === 0 ? (
-                            <div className="py-8 text-center text-text-3 text-[9px] border border-dashed border-border/40 rounded-lg">Drop here</div>
+                            <div className="py-8 text-center text-text-3 text-[9px] border border-dashed border-border/40 rounded-lg">
+                              Drop here
+                            </div>
                           ) : (
                             colTasks.map((t: any) => {
                               const isProcessing = t.id === processingTaskId
@@ -394,7 +441,13 @@ function ProjectsPage() {
                                   )}
                                   <p className="font-semibold text-text-1">{t.title}</p>
                                   <div className="flex justify-between items-center text-[9px]">
-                                    <Badge variant={t.priority === 'high' || t.priority === 'urgent' ? 'danger' : 'secondary'}>
+                                    <Badge
+                                      variant={
+                                        t.priority === 'high' || t.priority === 'urgent'
+                                          ? 'danger'
+                                          : 'secondary'
+                                      }
+                                    >
                                       {t.priority}
                                     </Badge>
                                     <span className="text-text-3">Est: {t.estimatedHours}h</span>
@@ -407,13 +460,15 @@ function ProjectsPage() {
                       </div>
                     )
                   })}
-                  {taskColumns.slice(2, 4).map(col => {
-                    const colTasks = projectDetail.tasks.map((t: any) => {
-                      if (t.id === processingTaskId && processingTaskStatus) {
-                        return { ...t, status: processingTaskStatus }
-                      }
-                      return t
-                    }).filter((t: any) => t.status === col.id)
+                  {taskColumns.slice(2, 4).map((col) => {
+                    const colTasks = projectDetail.tasks
+                      .map((t: any) => {
+                        if (t.id === processingTaskId && processingTaskStatus) {
+                          return { ...t, status: processingTaskStatus }
+                        }
+                        return t
+                      })
+                      .filter((t: any) => t.status === col.id)
                     return (
                       <div
                         key={col.id}
@@ -421,10 +476,14 @@ function ProjectsPage() {
                         onDrop={(e) => handleTaskDrop(e, col.id)}
                         className="bg-surface-2/30 border border-border/50 rounded-xl p-3 flex flex-col min-h-[300px]"
                       >
-                        <h6 className="text-[10px] font-bold text-text-2 uppercase mb-3 border-b border-border/60 pb-1.5">{col.title}</h6>
+                        <h6 className="text-[10px] font-bold text-text-2 uppercase mb-3 border-b border-border/60 pb-1.5">
+                          {col.title}
+                        </h6>
                         <div className="space-y-2 flex-1">
                           {colTasks.length === 0 ? (
-                            <div className="py-8 text-center text-text-3 text-[9px] border border-dashed border-border/40 rounded-lg">Drop here</div>
+                            <div className="py-8 text-center text-text-3 text-[9px] border border-dashed border-border/40 rounded-lg">
+                              Drop here
+                            </div>
                           ) : (
                             colTasks.map((t: any) => {
                               const isProcessing = t.id === processingTaskId
@@ -447,7 +506,13 @@ function ProjectsPage() {
                                   )}
                                   <p className="font-semibold text-text-1">{t.title}</p>
                                   <div className="flex justify-between items-center text-[9px]">
-                                    <Badge variant={t.priority === 'high' || t.priority === 'urgent' ? 'danger' : 'secondary'}>
+                                    <Badge
+                                      variant={
+                                        t.priority === 'high' || t.priority === 'urgent'
+                                          ? 'danger'
+                                          : 'secondary'
+                                      }
+                                    >
                                       {t.priority}
                                     </Badge>
                                     <span className="text-text-3">Est: {t.estimatedHours}h</span>
@@ -472,14 +537,25 @@ function ProjectsPage() {
                   <p className="text-xs text-text-3">No hours logged on this project yet.</p>
                 ) : (
                   projectDetail.timeEntries.map((entry: any) => (
-                    <div key={entry.id} className="p-3 border border-border bg-surface-2/20 rounded-xl flex items-center justify-between">
+                    <div
+                      key={entry.id}
+                      className="p-3 border border-border bg-surface-2/20 rounded-xl flex items-center justify-between"
+                    >
                       <div>
-                        <p className="text-xs font-bold text-text-1">{entry.description || 'General support'}</p>
-                        <p className="text-[10px] text-text-3 mt-0.5">{formatDate(entry.startedAt)}</p>
+                        <p className="text-xs font-bold text-text-1">
+                          {entry.description || 'General support'}
+                        </p>
+                        <p className="text-[10px] text-text-3 mt-0.5">
+                          {formatDate(entry.startedAt)}
+                        </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs font-bold text-accent">{durationToHours(entry.durationMinutes)}</p>
-                        <span className="text-[9px] text-text-3 font-semibold uppercase">{entry.isBillable ? 'Billable' : 'Non-Billable'}</span>
+                        <p className="text-xs font-bold text-accent">
+                          {durationToHours(entry.durationMinutes)}
+                        </p>
+                        <span className="text-[9px] text-text-3 font-semibold uppercase">
+                          {entry.isBillable ? 'Billable' : 'Non-Billable'}
+                        </span>
                       </div>
                     </div>
                   ))
@@ -491,7 +567,12 @@ function ProjectsPage() {
       </Modal>
 
       {/* QUICK ADD TASK MODAL */}
-      <Modal isOpen={isAddTaskOpen} onClose={() => setIsAddTaskOpen(false)} title="Add Task to Checklist" type="center">
+      <Modal
+        isOpen={isAddTaskOpen}
+        onClose={() => setIsAddTaskOpen(false)}
+        title="Add Task to Checklist"
+        type="center"
+      >
         <form onSubmit={handleCreateTaskSubmit} className="space-y-4">
           <Input
             label="Task Title / Goal *"
@@ -530,9 +611,7 @@ function ProjectsPage() {
             <Button type="button" variant="ghost" onClick={() => setIsAddTaskOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit">
-              Save Task
-            </Button>
+            <Button type="submit">Save Task</Button>
           </div>
         </form>
       </Modal>

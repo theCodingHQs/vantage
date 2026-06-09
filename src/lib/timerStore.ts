@@ -11,7 +11,13 @@ interface TimerState {
   description: string
   startedAt: string | null // ISO String
   seconds: number
-  startTimer: (projectId: string, projectName: string, taskId: string | null, taskName: string | null, description: string) => void
+  startTimer: (
+    projectId: string,
+    projectName: string,
+    taskId: string | null,
+    taskName: string | null,
+    description: string
+  ) => void
   stopTimer: () => Promise<void>
   tick: () => void
   resetTimer: () => void
@@ -62,7 +68,7 @@ export const useTimerStore = create<TimerState>()(
               durationMinutes,
               isBillable: true,
               hourlyRate: 0, // Hourly rate resolved on server from project defaults
-            }
+            },
           })
         } catch (err) {
           console.error('Failed to automatically save time entry:', err)
@@ -84,7 +90,7 @@ export const useTimerStore = create<TimerState>()(
       tick: () => {
         const { isRunning, startedAt } = get()
         if (!isRunning || !startedAt) return
-        
+
         const elapsed = Math.floor((Date.now() - new Date(startedAt).getTime()) / 1000)
         set({ seconds: Math.max(0, elapsed) })
       },
@@ -100,7 +106,7 @@ export const useTimerStore = create<TimerState>()(
           startedAt: null,
           seconds: 0,
         })
-      }
+      },
     }),
     {
       name: 'vantage-timer-store',

@@ -37,7 +37,7 @@ export const ClientForm: React.FC<ClientFormProps> = ({ onSuccess, onCancel }) =
           notes,
           tags: [],
           avatarUrl: '',
-        }
+        },
       })
       onSuccess(res)
     } catch (err: any) {

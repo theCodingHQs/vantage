@@ -1,4 +1,4 @@
-"use server"
+'use server'
 
 import { createServerFn } from '@tanstack/react-start'
 
@@ -28,7 +28,9 @@ export async function sendEmail(payload: EmailPayload) {
 
   try {
     console.log(`[EMAIL DBG] Attempting real Resend email transmission...`)
-    console.log(`[EMAIL DBG] Sender (From): ${process.env.FROM_EMAIL || 'Vantage OS <no-reply@vantage.com>'}`)
+    console.log(
+      `[EMAIL DBG] Sender (From): ${process.env.FROM_EMAIL || 'Vantage OS <no-reply@vantage.com>'}`
+    )
     console.log(`[EMAIL DBG] Recipient (To): ${payload.to}`)
     console.log(`[EMAIL DBG] Subject: ${payload.subject}`)
 
@@ -36,7 +38,7 @@ export async function sendEmail(payload: EmailPayload) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
         from: process.env.FROM_EMAIL || 'Vantage OS <no-reply@vantage.com>',
@@ -90,7 +92,15 @@ export const sendWelcomeEmail = createServerFn({ method: 'POST' })
 
 // Invoice Email Template
 export const sendInvoiceEmail = createServerFn({ method: 'POST' })
-  .validator((data: { toEmail: string; invoiceNum: string; total: string; clientName: string; portalUrl: string }) => data)
+  .validator(
+    (data: {
+      toEmail: string
+      invoiceNum: string
+      total: string
+      clientName: string
+      portalUrl: string
+    }) => data
+  )
   .handler(async ({ data }) => {
     const { toEmail, invoiceNum, total, clientName, portalUrl } = data
     return sendEmail({
@@ -116,7 +126,10 @@ export const sendInvoiceEmail = createServerFn({ method: 'POST' })
 
 // Proposal Email Template
 export const sendProposalEmail = createServerFn({ method: 'POST' })
-  .validator((data: { toEmail: string; proposalTitle: string; clientName: string; proposalUrl: string }) => data)
+  .validator(
+    (data: { toEmail: string; proposalTitle: string; clientName: string; proposalUrl: string }) =>
+      data
+  )
   .handler(async ({ data }) => {
     const { toEmail, proposalTitle, clientName, proposalUrl } = data
     return sendEmail({

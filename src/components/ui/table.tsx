@@ -19,14 +19,19 @@ export const Table: React.FC<TableProps> = ({
         <thead className="bg-surface-2/50 text-text-2 font-medium border-b border-border text-xs uppercase tracking-wider">
           <tr>
             {headers.map((h, i) => (
-              <th key={i} className="px-6 py-4 font-semibold">{h}</th>
+              <th key={i} className="px-6 py-4 font-semibold">
+                {h}
+              </th>
             ))}
           </tr>
         </thead>
         <tbody className="divide-y divide-border/60">
           {isEmpty ? (
             <tr>
-              <td colSpan={headers.length} className="px-6 py-12 text-center text-text-3 font-medium">
+              <td
+                colSpan={headers.length}
+                className="px-6 py-12 text-center text-text-3 font-medium"
+              >
                 {emptyMessage}
               </td>
             </tr>
@@ -39,11 +44,11 @@ export const Table: React.FC<TableProps> = ({
   )
 }
 
-export const TableRow: React.FC<{ children: React.ReactNode; className?: string; onClick?: () => void }> = ({
-  children,
-  className = '',
-  onClick,
-}) => {
+export const TableRow: React.FC<{
+  children: React.ReactNode
+  className?: string
+  onClick?: () => void
+}> = ({ children, className = '', onClick }) => {
   return (
     <tr
       onClick={onClick}

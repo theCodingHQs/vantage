@@ -1,6 +1,12 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
-import { getInvoices, getInvoiceDetail, createInvoice, recordInvoicePayment, updateInvoiceStatus } from '#/server/functions/invoicing'
+import {
+  getInvoices,
+  getInvoiceDetail,
+  createInvoice,
+  recordInvoicePayment,
+  updateInvoiceStatus,
+} from '#/server/functions/invoicing'
 import { getClients } from '#/server/functions/crm'
 import { getProjects } from '#/server/functions/projects'
 import { sendInvoiceEmail } from '#/server/email'
@@ -31,22 +37,29 @@ function InvoicesPage() {
   const [search, setSearch] = useState('')
   const [filterStatus, setFilterStatus] = useState('all')
   const [selectedInvoice, setSelectedInvoice] = useState<any | null>(null)
-  
+
   // Invoice Builder States
   const [isBuilderOpen, setIsBuilderOpen] = useState(false)
   const [clientId, setClientId] = useState(clientsList[0]?.id || '')
   const [projectId, setProjectId] = useState('')
   const [invoiceNumber, setInvoiceNumber] = useState(`INV-${Date.now().toString().substring(6)}`)
   const [issueDate, setIssueDate] = useState(new Date().toISOString().substring(0, 10))
-  const [dueDate, setDueDate] = useState(new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().substring(0, 10))
+  const [dueDate, setDueDate] = useState(
+    new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().substring(0, 10)
+  )
   const [taxRate, setTaxRate] = useState('0')
   const [discountAmount, setDiscountAmount] = useState('0')
   const [notes, setNotes] = useState('Thank you for your business!')
-  
+
   // Builder Items State
-  const [items, setItems] = useState<{ description: string; quantity: string; unitPrice: string; type: 'service' | 'time' | 'expense' | 'product' }[]>([
-    { description: 'Consulting services', quantity: '10', unitPrice: '50', type: 'service' }
-  ])
+  const [items, setItems] = useState<
+    {
+      description: string
+      quantity: string
+      unitPrice: string
+      type: 'service' | 'time' | 'expense' | 'product'
+    }[]
+  >([{ description: 'Consulting services', quantity: '10', unitPrice: '50', type: 'service' }])
 
   // Payment Marker State
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
@@ -58,7 +71,10 @@ function InvoicesPage() {
   const [emailStatus, setEmailStatus] = useState<string | null>(null)
 
   const handleAddItem = () => {
-    setItems([...items, { description: 'New Service', quantity: '1', unitPrice: '100', type: 'service' }])
+    setItems([
+      ...items,
+      { description: 'New Service', quantity: '1', unitPrice: '100', type: 'service' },
+    ])
   }
 
   const handleRemoveItem = (index: number) => {
@@ -66,7 +82,7 @@ function InvoicesPage() {
   }
 
   const handleUpdateItem = (index: number, field: string, value: string) => {
-    setItems(items.map((item, idx) => idx === index ? { ...item, [field]: value } : item))
+    setItems(items.map((item, idx) => (idx === index ? { ...item, [field]: value } : item)))
   }
 
   const handleCreateInvoiceSubmit = async (e: React.FormEvent) => {
@@ -85,17 +101,19 @@ function InvoicesPage() {
           discountAmount: parseFloat(discountAmount) || 0,
           currency: 'USD',
           notes,
-          items: items.map(item => ({
+          items: items.map((item) => ({
             description: item.description,
             quantity: parseFloat(item.quantity) || 1,
             unitPrice: parseFloat(item.unitPrice) || 0,
-            type: item.type
-          }))
-        }
+            type: item.type,
+          })),
+        },
       })
       setIsBuilderOpen(false)
       // reset items
-      setItems([{ description: 'Consulting services', quantity: '10', unitPrice: '50', type: 'service' }])
+      setItems([
+        { description: 'Consulting services', quantity: '10', unitPrice: '50', type: 'service' },
+      ])
       router.invalidate()
     } catch (err) {
       console.error(err)
@@ -109,8 +127,8 @@ function InvoicesPage() {
         data: {
           id: selectedInvoice.id,
           paymentMethod,
-          notes: paymentNotes
-        }
+          notes: paymentNotes,
+        },
       })
       setSelectedInvoice({ ...selectedInvoice, ...updated })
       setIsPaymentModalOpen(false)
@@ -131,8 +149,8 @@ function InvoicesPage() {
           invoiceNum: selectedInvoice.invoiceNumber,
           total: formatCurrency(selectedInvoice.total),
           clientName: selectedInvoice.client.name,
-          portalUrl: `${window.location.origin}/portal/${selectedInvoice.id}` // client portal link
-        }
+          portalUrl: `${window.location.origin}/portal/${selectedInvoice.id}`, // client portal link
+        },
       })
 
       if (emailRes.success) {
@@ -140,7 +158,7 @@ function InvoicesPage() {
         // Update invoice status to 'sent'
         if (selectedInvoice.status === 'draft') {
           const updated = await updateInvoiceStatus({
-            data: { id: selectedInvoice.id, status: 'sent' }
+            data: { id: selectedInvoice.id, status: 'sent' },
           })
           setSelectedInvoice({ ...selectedInvoice, ...updated })
         }
@@ -157,19 +175,21 @@ function InvoicesPage() {
   }
 
   // Filter invoices
-  const filteredInvoices = invoicesList.filter(i => {
-    const matchesSearch = i.invoice.invoiceNumber.toLowerCase().includes(search.toLowerCase()) || 
-                          i.clientName.toLowerCase().includes(search.toLowerCase())
+  const filteredInvoices = invoicesList.filter((i) => {
+    const matchesSearch =
+      i.invoice.invoiceNumber.toLowerCase().includes(search.toLowerCase()) ||
+      i.clientName.toLowerCase().includes(search.toLowerCase())
     const matchesStatus = filterStatus === 'all' || i.invoice.status === filterStatus
     return matchesSearch && matchesStatus
   })
 
   // Live total calculation for builder
   let builderSubtotal = 0
-  items.forEach(item => {
+  items.forEach((item) => {
     builderSubtotal += (parseFloat(item.quantity) || 0) * (parseFloat(item.unitPrice) || 0)
   })
-  const builderTax = (builderSubtotal - (parseFloat(discountAmount) || 0)) * ((parseFloat(taxRate) || 0) / 100)
+  const builderTax =
+    (builderSubtotal - (parseFloat(discountAmount) || 0)) * ((parseFloat(taxRate) || 0) / 100)
   const builderTotal = builderSubtotal - (parseFloat(discountAmount) || 0) + builderTax
 
   return (
@@ -178,9 +198,15 @@ function InvoicesPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-text-1">Invoices</h1>
-          <p className="text-xs text-text-2">Generate premium, branded PDF receipts and track outstanding income.</p>
+          <p className="text-xs text-text-2">
+            Generate premium, branded PDF receipts and track outstanding income.
+          </p>
         </div>
-        <Button size="sm" onClick={() => setIsBuilderOpen(true)} className="flex items-center gap-1">
+        <Button
+          size="sm"
+          onClick={() => setIsBuilderOpen(true)}
+          className="flex items-center gap-1"
+        >
           <Plus size={14} /> New Invoice
         </Button>
       </div>
@@ -228,21 +254,25 @@ function InvoicesPage() {
                 setEmailStatus(null)
               }}
             >
-              <TableCell className="font-semibold text-text-1 font-mono">{inv.invoice.invoiceNumber}</TableCell>
+              <TableCell className="font-semibold text-text-1 font-mono">
+                {inv.invoice.invoiceNumber}
+              </TableCell>
               <TableCell>{inv.clientName}</TableCell>
               <TableCell>{formatDate(inv.invoice.issueDate)}</TableCell>
               <TableCell>{formatDate(inv.invoice.dueDate)}</TableCell>
-              <TableCell className="font-bold text-text-1">{formatCurrency(inv.invoice.total)}</TableCell>
+              <TableCell className="font-bold text-text-1">
+                {formatCurrency(inv.invoice.total)}
+              </TableCell>
               <TableCell>
                 <Badge
                   variant={
                     inv.invoice.status === 'paid'
                       ? 'success'
                       : inv.invoice.status === 'sent'
-                      ? 'primary'
-                      : inv.invoice.status === 'overdue'
-                      ? 'danger'
-                      : 'secondary'
+                        ? 'primary'
+                        : inv.invoice.status === 'overdue'
+                          ? 'danger'
+                          : 'secondary'
                   }
                 >
                   {inv.invoice.status}
@@ -254,15 +284,22 @@ function InvoicesPage() {
       </div>
 
       {/* CREATE INVOICE BUILDER SIDE MODAL */}
-      <Modal isOpen={isBuilderOpen} onClose={() => setIsBuilderOpen(false)} title="Generate Professional Invoice" type="right">
+      <Modal
+        isOpen={isBuilderOpen}
+        onClose={() => setIsBuilderOpen(false)}
+        title="Generate Professional Invoice"
+        type="right"
+      >
         {clientsList.length === 0 ? (
-          <div className="py-8 text-center text-text-3 text-xs">Add a CRM client before building invoices.</div>
+          <div className="py-8 text-center text-text-3 text-xs">
+            Add a CRM client before building invoices.
+          </div>
         ) : (
           <form onSubmit={handleCreateInvoiceSubmit} className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <Select
                 label="Bill To Client *"
-                options={clientsList.map(c => ({ value: c.id, label: c.name }))}
+                options={clientsList.map((c) => ({ value: c.id, label: c.name }))}
                 value={clientId}
                 onChange={(e) => setClientId(e.target.value)}
                 required
@@ -296,13 +333,22 @@ function InvoicesPage() {
             <div className="space-y-3">
               <div className="flex justify-between items-center border-b border-border pb-2">
                 <span className="text-xs font-bold text-text-2 uppercase">Line Items</span>
-                <Button type="button" size="sm" variant="ghost" onClick={handleAddItem} className="py-1 text-xs">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  onClick={handleAddItem}
+                  className="py-1 text-xs"
+                >
                   + Add Item
                 </Button>
               </div>
 
               {items.map((item, idx) => (
-                <div key={idx} className="p-3 bg-surface-2 rounded-lg border border-border space-y-3 relative">
+                <div
+                  key={idx}
+                  className="p-3 bg-surface-2 rounded-lg border border-border space-y-3 relative"
+                >
                   <Input
                     label="Description"
                     value={item.description}
@@ -328,7 +374,10 @@ function InvoicesPage() {
                     />
                     <div className="flex items-end justify-between gap-2">
                       <div className="flex-1 font-mono text-xs text-text-2 font-bold mb-3">
-                        Total: {formatCurrency((parseFloat(item.quantity) || 0) * (parseFloat(item.unitPrice) || 0))}
+                        Total:{' '}
+                        {formatCurrency(
+                          (parseFloat(item.quantity) || 0) * (parseFloat(item.unitPrice) || 0)
+                        )}
                       </div>
                       {items.length > 1 && (
                         <Button
@@ -379,16 +428,19 @@ function InvoicesPage() {
               <Button type="button" variant="ghost" onClick={() => setIsBuilderOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit">
-                Save Invoice
-              </Button>
+              <Button type="submit">Save Invoice</Button>
             </div>
           </form>
         )}
       </Modal>
 
       {/* DETAIL DRAWER / PREVIEW MODAL */}
-      <Modal isOpen={selectedInvoice !== null} onClose={() => setSelectedInvoice(null)} title="Invoice Details" type="right">
+      <Modal
+        isOpen={selectedInvoice !== null}
+        onClose={() => setSelectedInvoice(null)}
+        title="Invoice Details"
+        type="right"
+      >
         {selectedInvoice && (
           <div className="space-y-6 print:space-y-8">
             {/* Header controls */}
@@ -400,15 +452,31 @@ function InvoicesPage() {
                 <span className="text-xs font-mono font-bold">{selectedInvoice.invoiceNumber}</span>
               </div>
               <div className="flex gap-1.5">
-                <Button size="sm" variant="ghost" onClick={handlePrint} className="p-1.5" title="Print/Save PDF">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={handlePrint}
+                  className="p-1.5"
+                  title="Print/Save PDF"
+                >
                   <Printer size={16} />
                 </Button>
                 {selectedInvoice.status !== 'paid' && (
                   <>
-                    <Button size="sm" variant="secondary" onClick={() => setIsPaymentModalOpen(true)} className="flex items-center gap-1 text-xs">
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => setIsPaymentModalOpen(true)}
+                      className="flex items-center gap-1 text-xs"
+                    >
                       <CheckCircle2 size={12} /> Mark Paid
                     </Button>
-                    <Button size="sm" onClick={handleSendInvoiceEmail} disabled={sendingEmail} className="flex items-center gap-1 text-xs">
+                    <Button
+                      size="sm"
+                      onClick={handleSendInvoiceEmail}
+                      disabled={sendingEmail}
+                      className="flex items-center gap-1 text-xs"
+                    >
                       <Send size={12} /> {sendingEmail ? 'Sending...' : 'Send Invoice'}
                     </Button>
                   </>
@@ -430,27 +498,45 @@ function InvoicesPage() {
                   <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-white font-bold text-lg mb-2 print:bg-black">
                     V
                   </div>
-                  <h3 className="text-base font-bold text-text-1 print:text-black">Vantage Invoice</h3>
-                  <p className="text-[10px] text-text-3 font-semibold print:text-gray-500">FREELANCE CONTRACTOR BILLING</p>
+                  <h3 className="text-base font-bold text-text-1 print:text-black">
+                    Vantage Invoice
+                  </h3>
+                  <p className="text-[10px] text-text-3 font-semibold print:text-gray-500">
+                    FREELANCE CONTRACTOR BILLING
+                  </p>
                 </div>
                 <div className="text-right">
-                  <h4 className="text-base font-mono font-bold text-text-1 print:text-black">{selectedInvoice.invoiceNumber}</h4>
+                  <h4 className="text-base font-mono font-bold text-text-1 print:text-black">
+                    {selectedInvoice.invoiceNumber}
+                  </h4>
                   <p className="text-xs">Issue Date: {formatDate(selectedInvoice.issueDate)}</p>
-                  <p className="text-xs font-semibold text-danger">Due Date: {formatDate(selectedInvoice.dueDate)}</p>
+                  <p className="text-xs font-semibold text-danger">
+                    Due Date: {formatDate(selectedInvoice.dueDate)}
+                  </p>
                 </div>
               </div>
 
               {/* Client Billing Info */}
               <div className="grid grid-cols-2 gap-6 pt-4 border-t border-border/60">
                 <div>
-                  <span className="text-[10px] text-text-3 font-bold uppercase tracking-wider block">Billed To:</span>
-                  <p className="text-text-1 font-semibold mt-1 print:text-black">{selectedInvoice.client.name}</p>
+                  <span className="text-[10px] text-text-3 font-bold uppercase tracking-wider block">
+                    Billed To:
+                  </span>
+                  <p className="text-text-1 font-semibold mt-1 print:text-black">
+                    {selectedInvoice.client.name}
+                  </p>
                   <p className="text-xs">{selectedInvoice.client.company}</p>
-                  <p className="text-xs mt-0.5">{selectedInvoice.client.address || 'No address provided'}</p>
+                  <p className="text-xs mt-0.5">
+                    {selectedInvoice.client.address || 'No address provided'}
+                  </p>
                 </div>
                 <div className="text-right">
-                  <span className="text-[10px] text-text-3 font-bold uppercase tracking-wider block">Payment Instructions:</span>
-                  <p className="text-xs mt-1 italic">{selectedInvoice.notes || 'Pay via bank transfer or credit card portal link.'}</p>
+                  <span className="text-[10px] text-text-3 font-bold uppercase tracking-wider block">
+                    Payment Instructions:
+                  </span>
+                  <p className="text-xs mt-1 italic">
+                    {selectedInvoice.notes || 'Pay via bank transfer or credit card portal link.'}
+                  </p>
                 </div>
               </div>
 
@@ -459,10 +545,14 @@ function InvoicesPage() {
                 <Table headers={['Description', 'Quantity', 'Unit Price', 'Amount']}>
                   {selectedInvoice.items.map((item: any) => (
                     <tr key={item.id} className="border-b border-border/40">
-                      <TableCell className="font-medium text-text-1 print:text-black">{item.description}</TableCell>
+                      <TableCell className="font-medium text-text-1 print:text-black">
+                        {item.description}
+                      </TableCell>
                       <TableCell>{parseFloat(item.quantity)}</TableCell>
                       <TableCell>{formatCurrency(item.unitPrice)}</TableCell>
-                      <TableCell className="font-semibold text-text-1 text-right print:text-black">{formatCurrency(item.amount)}</TableCell>
+                      <TableCell className="font-semibold text-text-1 text-right print:text-black">
+                        {formatCurrency(item.amount)}
+                      </TableCell>
                     </tr>
                   ))}
                 </Table>
@@ -473,7 +563,9 @@ function InvoicesPage() {
                 <div className="w-64 space-y-2 text-right">
                   <div className="flex justify-between text-xs">
                     <span>Subtotal:</span>
-                    <span className="font-semibold text-text-1 print:text-black">{formatCurrency(selectedInvoice.subtotal)}</span>
+                    <span className="font-semibold text-text-1 print:text-black">
+                      {formatCurrency(selectedInvoice.subtotal)}
+                    </span>
                   </div>
                   {parseFloat(selectedInvoice.discountAmount) > 0 && (
                     <div className="flex justify-between text-xs text-danger">
@@ -489,7 +581,9 @@ function InvoicesPage() {
                   )}
                   <div className="flex justify-between border-t border-border/60 pt-2 text-sm font-bold">
                     <span className="text-text-2">Total Amount Due:</span>
-                    <span className="text-success text-base">{formatCurrency(selectedInvoice.total)}</span>
+                    <span className="text-success text-base">
+                      {formatCurrency(selectedInvoice.total)}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -499,9 +593,17 @@ function InvoicesPage() {
       </Modal>
 
       {/* RECORD PAYMENT MODAL */}
-      <Modal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} title="Record Invoice Payment" type="center">
+      <Modal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        title="Record Invoice Payment"
+        type="center"
+      >
         <div className="space-y-4">
-          <p className="text-xs text-text-2">Record a client payment manually. This will update the status to paid and log the client's revenue.</p>
+          <p className="text-xs text-text-2">
+            Record a client payment manually. This will update the status to paid and log the
+            client's revenue.
+          </p>
           <Select
             label="Payment Gateway / Method"
             options={[
@@ -523,9 +625,7 @@ function InvoicesPage() {
             <Button variant="ghost" onClick={() => setIsPaymentModalOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleMarkPaid}>
-              Mark Paid
-            </Button>
+            <Button onClick={handleMarkPaid}>Mark Paid</Button>
           </div>
         </div>
       </Modal>

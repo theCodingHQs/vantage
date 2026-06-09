@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Sun, Moon, Monitor } from 'lucide-react'
 
 type ThemeMode = 'light' | 'dark' | 'auto'
 
@@ -54,28 +55,64 @@ export default function ThemeToggle() {
     }
   }, [mode])
 
-  function toggleMode() {
-    const nextMode: ThemeMode =
-      mode === 'light' ? 'dark' : mode === 'dark' ? 'auto' : 'light'
-    setMode(nextMode)
-    applyThemeMode(nextMode)
-    window.localStorage.setItem('theme', nextMode)
+  function updateMode(newMode: ThemeMode) {
+    setMode(newMode)
+    applyThemeMode(newMode)
+    window.localStorage.setItem('theme', newMode)
   }
 
-  const label =
-    mode === 'auto'
-      ? 'Theme mode: auto (system). Click to switch to light mode.'
-      : `Theme mode: ${mode}. Click to switch mode.`
-
   return (
-    <button
-      type="button"
-      onClick={toggleMode}
-      aria-label={label}
-      title={label}
-      className="rounded-full border border-[var(--chip-line)] bg-[var(--chip-bg)] px-3 py-1.5 text-sm font-semibold text-[var(--sea-ink)] shadow-[0_8px_22px_rgba(30,90,72,0.08)] transition hover:-translate-y-0.5"
-    >
-      {mode === 'auto' ? 'Auto' : mode === 'dark' ? 'Dark' : 'Light'}
-    </button>
+    <div className="relative flex items-center bg-surface-2/40 dark:bg-surface-2/20 border border-border/60 rounded-full p-0.5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] backdrop-blur-sm h-8 w-[92px]">
+      {/* Sliding background capsule */}
+      <div
+        className="absolute top-0.5 bottom-0.5 rounded-full bg-surface dark:bg-surface-2 shadow-[0_1.5px_4px_rgba(0,0,0,0.12)] transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+        style={{
+          width: '28px',
+          left: mode === 'light' ? '2px' : mode === 'auto' ? '30px' : '58px',
+        }}
+      />
+
+      {/* Light Button */}
+      <button
+        type="button"
+        onClick={() => updateMode('light')}
+        className="relative z-10 flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200"
+        title="Light Mode"
+        aria-label="Switch to Light Mode"
+      >
+        <Sun
+          size={14}
+          className={`transition-all duration-300 ${mode === 'light' ? 'text-accent scale-110 rotate-12' : 'text-text-2 scale-100 opacity-60 hover:opacity-100'}`}
+        />
+      </button>
+
+      {/* Auto / System Button */}
+      <button
+        type="button"
+        onClick={() => updateMode('auto')}
+        className="relative z-10 flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200"
+        title="System Preference"
+        aria-label="Switch to System Preference"
+      >
+        <Monitor
+          size={14}
+          className={`transition-all duration-300 ${mode === 'auto' ? 'text-accent scale-110' : 'text-text-2 scale-100 opacity-60 hover:opacity-100'}`}
+        />
+      </button>
+
+      {/* Dark Button */}
+      <button
+        type="button"
+        onClick={() => updateMode('dark')}
+        className="relative z-10 flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200"
+        title="Dark Mode"
+        aria-label="Switch to Dark Mode"
+      >
+        <Moon
+          size={14}
+          className={`transition-all duration-300 ${mode === 'dark' ? 'text-accent scale-110 -rotate-12' : 'text-text-2 scale-100 opacity-60 hover:opacity-100'}`}
+        />
+      </button>
+    </div>
   )
 }

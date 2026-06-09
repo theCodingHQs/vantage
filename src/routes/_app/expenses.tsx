@@ -51,8 +51,8 @@ function ExpensesPage() {
 
     setLoading(true)
     try {
-      const selectedProj = projectsList.find(p => p.project.id === projectId)
-      
+      const selectedProj = projectsList.find((p) => p.project.id === projectId)
+
       await createExpense({
         data: {
           category,
@@ -62,8 +62,8 @@ function ExpensesPage() {
           projectId: projectId || null,
           clientId: selectedProj ? selectedProj.project.clientId : null,
           isBillable,
-          receiptUrl: ''
-        }
+          receiptUrl: '',
+        },
       })
       setIsAddExpenseOpen(false)
       setAmount('')
@@ -91,9 +91,10 @@ function ExpensesPage() {
       expense.isInvoiced ? 'Invoiced' : 'Pending',
     ])
 
-    const csvContent = 'data:text/csv;charset=utf-8,' 
-      + [headers.join(','), ...rows.map(e => e.join(','))].join('\n')
-      
+    const csvContent =
+      'data:text/csv;charset=utf-8,' +
+      [headers.join(','), ...rows.map((e) => e.join(','))].join('\n')
+
     const encodedUri = encodeURI(csvContent)
     const link = document.createElement('a')
     link.setAttribute('href', encodedUri)
@@ -104,9 +105,10 @@ function ExpensesPage() {
   }
 
   // Filter list
-  const filteredExpenses = expensesList.filter(e => {
-    const matchesSearch = e.expense.category.toLowerCase().includes(search.toLowerCase()) || 
-                          (e.expense.description && e.expense.description.toLowerCase().includes(search.toLowerCase()))
+  const filteredExpenses = expensesList.filter((e) => {
+    const matchesSearch =
+      e.expense.category.toLowerCase().includes(search.toLowerCase()) ||
+      (e.expense.description && e.expense.description.toLowerCase().includes(search.toLowerCase()))
     return matchesSearch
   })
 
@@ -120,9 +122,9 @@ function ExpensesPage() {
     categoryTotals[expense.category] = (categoryTotals[expense.category] || 0) + amt
   })
 
-  const donutChartData = Object.keys(categoryTotals).map(cat => ({
+  const donutChartData = Object.keys(categoryTotals).map((cat) => ({
     name: cat,
-    value: categoryTotals[cat]
+    value: categoryTotals[cat],
   }))
 
   return (
@@ -131,13 +133,26 @@ function ExpensesPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-text-1">Expenses</h1>
-          <p className="text-xs text-text-2">Record business outlays, associate software fees with clients, and download tax statements.</p>
+          <p className="text-xs text-text-2">
+            Record business outlays, associate software fees with clients, and download tax
+            statements.
+          </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button size="sm" variant="secondary" onClick={handleExportCSV} disabled={expensesList.length === 0} className="flex items-center gap-1.5">
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={handleExportCSV}
+            disabled={expensesList.length === 0}
+            className="flex items-center gap-1.5"
+          >
             <Download size={14} /> Export CSV
           </Button>
-          <Button size="sm" onClick={() => setIsAddExpenseOpen(true)} className="flex items-center gap-1.5">
+          <Button
+            size="sm"
+            onClick={() => setIsAddExpenseOpen(true)}
+            className="flex items-center gap-1.5"
+          >
             <Plus size={14} /> Add Expense
           </Button>
         </div>
@@ -167,18 +182,25 @@ function ExpensesPage() {
                 <TableCell>{formatDateYYYYMMDD(expense.date)}</TableCell>
                 <TableCell>
                   <span className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: CATEGORY_COLORS[expense.category] || '#94a3b8' }} />
+                    <span
+                      className="w-2 h-2 rounded-full"
+                      style={{ backgroundColor: CATEGORY_COLORS[expense.category] || '#94a3b8' }}
+                    />
                     {expense.category}
                   </span>
                 </TableCell>
-                <TableCell className="font-medium text-text-1">{expense.description || '—'}</TableCell>
+                <TableCell className="font-medium text-text-1">
+                  {expense.description || '—'}
+                </TableCell>
                 <TableCell>{projectName || '—'}</TableCell>
                 <TableCell>
                   <Badge variant={expense.isBillable ? 'success' : 'secondary'}>
                     {expense.isBillable ? 'Yes' : 'No'}
                   </Badge>
                 </TableCell>
-                <TableCell className="font-bold text-text-1">{formatCurrency(expense.amount)}</TableCell>
+                <TableCell className="font-bold text-text-1">
+                  {formatCurrency(expense.amount)}
+                </TableCell>
               </TableRow>
             ))}
           </Table>
@@ -188,7 +210,9 @@ function ExpensesPage() {
         <div className="space-y-6">
           <Card>
             <CardHeader className="pb-2 border-0">
-              <CardTitle className="text-xs font-bold text-text-2 uppercase">Spending Breakdown</CardTitle>
+              <CardTitle className="text-xs font-bold text-text-2 uppercase">
+                Spending Breakdown
+              </CardTitle>
             </CardHeader>
             <CardContent className="h-64 flex flex-col items-center justify-center">
               {donutChartData.length === 0 ? (
@@ -208,11 +232,18 @@ function ExpensesPage() {
                       dataKey="value"
                     >
                       {donutChartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={CATEGORY_COLORS[entry.name] || '#94a3b8'} />
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={CATEGORY_COLORS[entry.name] || '#94a3b8'}
+                        />
                       ))}
                     </Pie>
                     <Tooltip
-                      contentStyle={{ backgroundColor: '#111118', borderColor: '#2a2a35', borderRadius: '8px' }}
+                      contentStyle={{
+                        backgroundColor: '#111118',
+                        borderColor: '#2a2a35',
+                        borderRadius: '8px',
+                      }}
                       itemStyle={{ color: '#f1f5f9', fontSize: '11px' }}
                       formatter={(v) => [`$${parseFloat(v as string).toFixed(2)}`]}
                     />
@@ -232,16 +263,26 @@ function ExpensesPage() {
           {/* Sum details */}
           <Card>
             <CardHeader className="pb-2 border-0">
-              <CardTitle className="text-xs font-bold text-text-2 uppercase">Totals Summary</CardTitle>
+              <CardTitle className="text-xs font-bold text-text-2 uppercase">
+                Totals Summary
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-xs">
               <div className="flex justify-between items-center py-1 border-b border-border/40">
                 <span className="text-text-2">Total Cash Outlay</span>
-                <span className="font-extrabold text-text-1 text-sm">{formatCurrency(totalSpent)}</span>
+                <span className="font-extrabold text-text-1 text-sm">
+                  {formatCurrency(totalSpent)}
+                </span>
               </div>
               <div className="flex justify-between items-center py-1">
                 <span className="text-text-2">Billable Outlay</span>
-                <span className="font-semibold text-success">{formatCurrency(expensesList.filter(e => e.expense.isBillable).reduce((acc, curr) => acc + parseFloat(curr.expense.amount), 0))}</span>
+                <span className="font-semibold text-success">
+                  {formatCurrency(
+                    expensesList
+                      .filter((e) => e.expense.isBillable)
+                      .reduce((acc, curr) => acc + parseFloat(curr.expense.amount), 0)
+                  )}
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -249,7 +290,12 @@ function ExpensesPage() {
       </div>
 
       {/* ADD EXPENSE MODAL */}
-      <Modal isOpen={isAddExpenseOpen} onClose={() => setIsAddExpenseOpen(false)} title="Log Business Outlay" type="right">
+      <Modal
+        isOpen={isAddExpenseOpen}
+        onClose={() => setIsAddExpenseOpen(false)}
+        title="Log Business Outlay"
+        type="right"
+      >
         <form onSubmit={handleCreateExpenseSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <Input
@@ -301,7 +347,7 @@ function ExpensesPage() {
             label="Associate with Project"
             options={[
               { value: '', label: 'None (General Business Expense)' },
-              ...projectsList.map(p => ({ value: p.project.id, label: p.project.title }))
+              ...projectsList.map((p) => ({ value: p.project.id, label: p.project.title })),
             ]}
             value={projectId}
             onChange={(e) => setProjectId(e.target.value)}
@@ -317,12 +363,19 @@ function ExpensesPage() {
                 disabled={loading}
                 className="rounded border-border bg-surface text-accent focus:ring-accent"
               />
-              <span className="text-sm font-medium text-text-2">Bill this expense back to the client</span>
+              <span className="text-sm font-medium text-text-2">
+                Bill this expense back to the client
+              </span>
             </label>
           </div>
 
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
-            <Button type="button" variant="ghost" onClick={() => setIsAddExpenseOpen(false)} disabled={loading}>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setIsAddExpenseOpen(false)}
+              disabled={loading}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>

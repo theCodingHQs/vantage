@@ -23,12 +23,15 @@ Vantage is a premium, self-hostable, full-stack digital workspace designed to re
 ## Local Development Setup
 
 ### 1. Clone & Install Dependencies
+
 ```powershell
 npm install
 ```
 
 ### 2. Configure Environment Variables
+
 Create a `.env` file in the root directory (refer to `.env.example`):
+
 ```env
 DATABASE_URL="postgresql://neondb_owner:npg_N30amcTkZugd@ep-weathered-pine-aqhsdfp6-pooler.c-8.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 REDIS_URL="rediss://default:gQAAAAAAAWe0AAIgcDJlMTlkNTQ4ZTZkZTg0Yzg4YTAyMTVmMDUxMTkyMTMzMg@up-shad-92084.upstash.io:6379"
@@ -38,15 +41,19 @@ APP_URL="http://localhost:3000"
 ```
 
 ### 3. Apply Database Migrations
+
 Push the database schema directly to your Postgres instance:
+
 ```powershell
 npx drizzle-kit push
 ```
 
 ### 4. Start Local Development Server
+
 ```powershell
 npm run dev
 ```
+
 Open `http://localhost:3000` to view the onboarding wizard and access your workspace.
 
 ---

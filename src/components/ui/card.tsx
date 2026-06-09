@@ -11,8 +11,9 @@ export const Card: React.FC<CardProps> = ({
   className = '',
   ...props
 }) => {
-  const bgStyles = variant === 'surface-2' ? 'bg-surface-2 border-border/80' : 'bg-surface border-border'
-  
+  const bgStyles =
+    variant === 'surface-2' ? 'bg-surface-2 border-border/80' : 'bg-surface border-border'
+
   return (
     <div
       className={`border rounded-xl p-5 shadow-sm transition-all duration-200 ${bgStyles} ${className}`}
@@ -34,7 +35,11 @@ export const CardTitle: React.FC<{ children: React.ReactNode; className?: string
   children,
   className = '',
 }) => {
-  return <h4 className={`text-sm font-semibold text-text-2 uppercase tracking-wider ${className}`}>{children}</h4>
+  return (
+    <h4 className={`text-sm font-semibold text-text-2 uppercase tracking-wider ${className}`}>
+      {children}
+    </h4>
+  )
 }
 
 export const CardContent: React.FC<{ children: React.ReactNode; className?: string }> = ({

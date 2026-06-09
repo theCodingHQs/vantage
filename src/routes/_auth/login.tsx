@@ -1,53 +1,51 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { Input } from "#/components/ui/input";
-import { Button } from "#/components/ui/button";
-import { loginUser } from "#/server/functions/auth";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { useState } from 'react'
+import { Input } from '#/components/ui/input'
+import { Button } from '#/components/ui/button'
+import { loginUser } from '#/server/functions/auth'
+import { ArrowRight } from 'lucide-react'
 
-export const Route = createFileRoute("/_auth/login")({
+export const Route = createFileRoute('/_auth/login')({
   component: LoginComponent,
-});
+})
 
 function LoginComponent() {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log("first");
-    e.preventDefault();
-    if (!email || !password) return;
+    console.log('first')
+    e.preventDefault()
+    if (!email || !password) return
 
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
     try {
-      const res = await loginUser({ data: { email, password } });
+      const res = await loginUser({ data: { email, password } })
       if (res.success && res.user) {
         if (res.user.onboardingCompleted) {
-          navigate({ to: "/dashboard" });
+          navigate({ to: '/dashboard' })
         } else {
-          navigate({ to: "/onboarding" });
+          navigate({ to: '/onboarding' })
         }
       } else {
-        setError(res.error || "Invalid email or password");
+        setError(res.error || 'Invalid email or password')
       }
     } catch (err: any) {
-      setError(err.message || "Invalid email or password");
+      setError(err.message || 'Invalid email or password')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div>
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-text-1">Welcome back</h2>
-        <p className="text-xs text-text-2 mt-1.5">
-          Sign in to your freelance operating workspace
-        </p>
+        <p className="text-xs text-text-2 mt-1.5">Sign in to your freelance operating workspace</p>
       </div>
 
       {error && (
@@ -82,22 +80,19 @@ function LoginComponent() {
           className="w-full flex items-center justify-center gap-2"
           disabled={loading}
         >
-          {loading ? "Signing in..." : "Sign In"}
+          {loading ? 'Signing in...' : 'Sign In'}
           {!loading && <ArrowRight size={14} />}
         </Button>
       </form>
 
       <div className="mt-6 pt-5 border-t border-border/60 text-center">
         <p className="text-xs text-text-2">
-          New to Vantage?{" "}
-          <Link
-            to="/register"
-            className="text-accent hover:underline font-semibold"
-          >
+          New to Vantage?{' '}
+          <Link to="/register" className="text-accent hover:underline font-semibold">
             Create an account
           </Link>
         </p>
       </div>
     </div>
-  );
+  )
 }

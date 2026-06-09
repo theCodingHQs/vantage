@@ -1,6 +1,8 @@
 import { Redis } from 'ioredis'
 
-const redisUrl = process.env.REDIS_URL || 'rediss://default:gQAAAAAAAWe0AAIgcDJlMTlkNTQ4ZTZkZTg0Yzg4YTAyMTVmMDUxMTkyMTMzMg@up-shad-92084.upstash.io:6379'
+const redisUrl =
+  process.env.REDIS_URL ||
+  'rediss://default:gQAAAAAAAWe0AAIgcDJlMTlkNTQ4ZTZkZTg0Yzg4YTAyMTVmMDUxMTkyMTMzMg@up-shad-92084.upstash.io:6379'
 
 let redis: Redis | null = null
 

@@ -33,7 +33,9 @@ function PortalsSettingsPage() {
   const [showInvoices, setShowInvoices] = useState(true)
   const [showFiles, setShowFiles] = useState(true)
   const [showMessages, setShowMessages] = useState(true)
-  const [customMessage, setCustomMessage] = useState('Welcome to our collaborative portal! Here you can track all milestone deliverables.')
+  const [customMessage, setCustomMessage] = useState(
+    'Welcome to our collaborative portal! Here you can track all milestone deliverables.'
+  )
   const [loading, setLoading] = useState(false)
   const [copiedStatus, setCopiedStatus] = useState<string | null>(null)
 
@@ -72,15 +74,18 @@ function PortalsSettingsPage() {
       await savePortalSettings({
         data: {
           clientId,
-          slug: slug.toLowerCase().trim().replace(/[^a-z0-9-]/g, '-'),
+          slug: slug
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9-]/g, '-'),
           isActive,
           showProjects,
           showInvoices,
           showFiles,
           showMessages,
           customMessage,
-          password: ''
-        }
+          password: '',
+        },
       })
       setIsConfigOpen(false)
       router.invalidate()
@@ -104,9 +109,17 @@ function PortalsSettingsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-text-1">Client Portals</h1>
-          <p className="text-xs text-text-2">Generate client-specific secure links to share task lists, project progress, and invoices.</p>
+          <p className="text-xs text-text-2">
+            Generate client-specific secure links to share task lists, project progress, and
+            invoices.
+          </p>
         </div>
-        <Button size="sm" onClick={handleOpenNewPortal} disabled={clientsList.length === 0} className="flex items-center gap-1">
+        <Button
+          size="sm"
+          onClick={handleOpenNewPortal}
+          disabled={clientsList.length === 0}
+          className="flex items-center gap-1"
+        >
           <Plus size={14} /> Configure Portal
         </Button>
       </div>
@@ -122,7 +135,9 @@ function PortalsSettingsPage() {
             <TableCell className="font-semibold text-text-1">
               <div>
                 <p>{clientName}</p>
-                <p className="text-[10px] text-text-3 font-normal">{clientCompany || 'Individual'}</p>
+                <p className="text-[10px] text-text-3 font-normal">
+                  {clientCompany || 'Individual'}
+                </p>
               </div>
             </TableCell>
             <TableCell className="font-mono text-xs text-accent">
@@ -145,10 +160,20 @@ function PortalsSettingsPage() {
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
-                <Button size="sm" variant="ghost" onClick={() => handleCopyLink(portal.slug)} className="py-1 text-xs">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => handleCopyLink(portal.slug)}
+                  className="py-1 text-xs"
+                >
                   {copiedStatus === portal.slug ? 'Copied!' : 'Copy Link'}
                 </Button>
-                <Button size="sm" variant="secondary" onClick={() => handleOpenConfig(portal)} className="py-1 text-xs flex items-center gap-1">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => handleOpenConfig(portal)}
+                  className="py-1 text-xs flex items-center gap-1"
+                >
                   <Settings2 size={12} /> Configure
                 </Button>
               </div>
@@ -158,11 +183,16 @@ function PortalsSettingsPage() {
       </Table>
 
       {/* CONFIGURATION DRAWER */}
-      <Modal isOpen={isConfigOpen} onClose={() => setIsConfigOpen(false)} title="Configure Client Portal Settings" type="right">
+      <Modal
+        isOpen={isConfigOpen}
+        onClose={() => setIsConfigOpen(false)}
+        title="Configure Client Portal Settings"
+        type="right"
+      >
         <form onSubmit={handleSavePortalSubmit} className="space-y-6">
           <Select
             label="Associate with CRM Client *"
-            options={clientsList.map(c => ({ value: c.id, label: c.name }))}
+            options={clientsList.map((c) => ({ value: c.id, label: c.name }))}
             value={clientId}
             onChange={(e) => setClientId(e.target.value)}
             required
@@ -179,7 +209,9 @@ function PortalsSettingsPage() {
           />
 
           <div className="space-y-3">
-            <label className="block text-xs font-semibold text-text-2 uppercase">Shared Elements</label>
+            <label className="block text-xs font-semibold text-text-2 uppercase">
+              Shared Elements
+            </label>
             <div className="grid grid-cols-2 gap-4">
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
@@ -199,7 +231,9 @@ function PortalsSettingsPage() {
                   disabled={loading}
                   className="rounded border-border bg-surface text-accent focus:ring-accent"
                 />
-                <span className="text-xs font-semibold text-text-2">Share Billing Invoice History</span>
+                <span className="text-xs font-semibold text-text-2">
+                  Share Billing Invoice History
+                </span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
@@ -219,7 +253,9 @@ function PortalsSettingsPage() {
                   disabled={loading}
                   className="rounded border-border bg-surface text-accent focus:ring-accent"
                 />
-                <span className="text-xs font-semibold text-text-2">Enable Async Messaging Thread</span>
+                <span className="text-xs font-semibold text-text-2">
+                  Enable Async Messaging Thread
+                </span>
               </label>
             </div>
           </div>
@@ -247,7 +283,12 @@ function PortalsSettingsPage() {
           />
 
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
-            <Button type="button" variant="ghost" onClick={() => setIsConfigOpen(false)} disabled={loading}>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setIsConfigOpen(false)}
+              disabled={loading}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>

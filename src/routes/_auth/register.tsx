@@ -41,7 +41,9 @@ function RegisterComponent() {
     <div>
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-text-1">Create account</h2>
-        <p className="text-xs text-text-2 mt-1.5">Get started with your premium freelance operating system</p>
+        <p className="text-xs text-text-2 mt-1.5">
+          Get started with your premium freelance operating system
+        </p>
       </div>
 
       {error && (

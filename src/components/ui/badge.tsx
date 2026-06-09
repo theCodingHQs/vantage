@@ -6,9 +6,14 @@ export interface BadgeProps {
   className?: string
 }
 
-export const Badge: React.FC<BadgeProps> = ({ variant = 'secondary', children, className = '' }) => {
-  const baseStyles = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold'
-  
+export const Badge: React.FC<BadgeProps> = ({
+  variant = 'secondary',
+  children,
+  className = '',
+}) => {
+  const baseStyles =
+    'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold'
+
   const variantStyles = {
     primary: 'bg-accent/10 text-accent border border-accent/20',
     secondary: 'bg-surface-2 text-text-2 border border-border',

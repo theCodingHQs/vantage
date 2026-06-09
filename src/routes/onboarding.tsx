@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, redirect } from '@tanstack/react-router'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Input, Select } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
 import { getCurrentUser } from '#/server/functions/auth'
@@ -24,7 +24,7 @@ export const Route = createFileRoute('/onboarding')({
 function OnboardingComponent() {
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
-  
+
   // Form State
   const [businessName, setBusinessName] = useState('')
   const [currency, setCurrency] = useState('USD')
@@ -33,7 +33,7 @@ function OnboardingComponent() {
   const [clientName, setClientName] = useState('')
   const [clientEmail, setClientEmail] = useState('')
   const [hourlyRate, setHourlyRate] = useState('50')
-  
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -47,12 +47,12 @@ function OnboardingComponent() {
       return
     }
     setError(null)
-    setStep(prev => prev + 1)
+    setStep((prev) => prev + 1)
   }
 
   const handleBack = () => {
     setError(null)
-    setStep(prev => prev - 1)
+    setStep((prev) => prev - 1)
   }
 
   const handleSubmit = async () => {
@@ -68,7 +68,7 @@ function OnboardingComponent() {
           clientName,
           clientEmail,
           hourlyRate: parseFloat(hourlyRate) || 0,
-        }
+        },
       })
 
       if (res.success) {
@@ -76,9 +76,9 @@ function OnboardingComponent() {
         confetti({
           particleCount: 150,
           spread: 80,
-          origin: { y: 0.6 }
+          origin: { y: 0.6 },
         })
-        
+
         // Wait a second for animation and redirect
         setTimeout(() => {
           navigate({ to: '/dashboard' })
@@ -100,11 +100,12 @@ function OnboardingComponent() {
       <div className="absolute bottom-[-30%] left-[-20%] w-[800px] h-[800px] rounded-full bg-success/5 blur-[150px] pointer-events-none" />
 
       <div className="w-full max-w-xl bg-surface border border-border rounded-2xl p-8 shadow-2xl backdrop-blur-md relative z-10">
-        
         {/* Step Indicator Header */}
         <div className="flex items-center justify-between mb-8 pb-4 border-b border-border/60">
           <div>
-            <span className="text-[10px] text-accent font-bold uppercase tracking-wider block">Step {step} of 5</span>
+            <span className="text-[10px] text-accent font-bold uppercase tracking-wider block">
+              Step {step} of 5
+            </span>
             <h2 className="text-xl font-bold text-text-1">Set up your workspace</h2>
           </div>
           <div className="flex gap-1">
@@ -202,7 +203,8 @@ function OnboardingComponent() {
           <div className="space-y-4 animate-in fade-in duration-200">
             <h3 className="text-sm font-semibold text-text-2">Add your first client</h3>
             <p className="text-xs text-text-2 leading-relaxed">
-              Don't worry, you can easily add more clients or import contacts later. Let's create your first client placeholder:
+              Don't worry, you can easily add more clients or import contacts later. Let's create
+              your first client placeholder:
             </p>
             <Input
               label="Client Contact Name"
@@ -228,7 +230,8 @@ function OnboardingComponent() {
           <div className="space-y-4 animate-in fade-in duration-200">
             <h3 className="text-sm font-semibold text-text-2">Set your hourly billing rate</h3>
             <p className="text-xs text-text-2 leading-relaxed">
-              This will be used as the default rate when logging hours for clients and setting up invoices. You can always override this.
+              This will be used as the default rate when logging hours for clients and setting up
+              invoices. You can always override this.
             </p>
             <Input
               label="Default Hourly Rate"
@@ -251,7 +254,8 @@ function OnboardingComponent() {
             <div>
               <h3 className="text-xl font-bold text-text-1">You're all set!</h3>
               <p className="text-xs text-text-2 mt-2 max-w-sm mx-auto leading-relaxed">
-                Click complete below to initialize your dashboard with your business branding, first client, and a demo project.
+                Click complete below to initialize your dashboard with your business branding, first
+                client, and a demo project.
               </p>
             </div>
           </div>
@@ -260,7 +264,12 @@ function OnboardingComponent() {
         {/* Navigation Footer */}
         <div className="flex items-center justify-between mt-8 pt-4 border-t border-border/60">
           {step > 1 ? (
-            <Button variant="secondary" onClick={handleBack} disabled={loading} className="flex items-center gap-1.5">
+            <Button
+              variant="secondary"
+              onClick={handleBack}
+              disabled={loading}
+              className="flex items-center gap-1.5"
+            >
               <ArrowLeft size={14} /> Back
             </Button>
           ) : (
@@ -278,7 +287,6 @@ function OnboardingComponent() {
             </Button>
           )}
         </div>
-
       </div>
     </div>
   )
